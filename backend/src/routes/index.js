@@ -1,16 +1,25 @@
 const express = require('express');
 const router = express.Router();
 
-// Import các file routes khác ở đây khi cần
+// Import routes
+const authRoutes = require('./authRoutes');
+const adminRoutes = require('./adminRoutes');
 // const productRoutes = require('./productRoutes');
-// const authRoutes = require('./authRoutes');
+// const orderRoutes = require('./orderRoutes');
+
+/**
+ * @swagger
+ * tags:
+ *   name: Health
+ *   description: Kiểm tra trạng thái server
+ */
 
 /**
  * @swagger
  * /api/health:
  *   get:
  *     summary: Kiểm tra trạng thái server
- *     description: Trả về trạng thái hoạt động của server
+ *     tags: [Health]
  *     responses:
  *       200:
  *         description: Server hoạt động bình thường
@@ -27,14 +36,16 @@ const router = express.Router();
  *                   example: Server is running
  */
 router.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    message: 'Server is running',
-  });
+    res.status(200).json({
+        status: 'OK',
+        message: 'Server is running',
+    });
 });
 
-// Sử dụng các routes khác
+// Gắn các route modules
+router.use('/auth', authRoutes);
+router.use('/admin', adminRoutes);
 // router.use('/products', productRoutes);
-// router.use('/auth', authRoutes);
+// router.use('/orders', orderRoutes);
 
 module.exports = router;
