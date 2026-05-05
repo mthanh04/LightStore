@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { protect, admin } = require('../middlewares/authMiddleware');
-const { getAllUsers, updateUser, deleteUser } = require('../controllers/adminController');
+const { getAllUsers, updateUser, deleteUser, getDashboardStats } = require('../controllers/adminController');
 
 /**
  * @swagger
  * tags:
- *   name: Admin - Users
- *   description: API quản lý người dùng (chỉ Admin)
+ *   name: Admin
+ *   description: API quản lý dành cho Admin
  */
 
 // Tất cả route dưới đây đều yêu cầu đăng nhập + quyền Admin
@@ -15,10 +15,24 @@ router.use(protect, admin);
 
 /**
  * @swagger
+ * /api/admin/dashboard:
+ *   get:
+ *     summary: Lấy thống kê tổng quan
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Thông tin thống kê
+ */
+router.get('/dashboard', getDashboardStats);
+
+/**
+ * @swagger
  * /api/admin/users:
  *   get:
  *     summary: Lấy danh sách tất cả user (phân trang, tìm kiếm)
- *     tags: [Admin - Users]
+ *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -58,7 +72,7 @@ router.get('/users', getAllUsers);
  * /api/admin/users/{id}:
  *   put:
  *     summary: Cập nhật thông tin user (đổi role)
- *     tags: [Admin - Users]
+ *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -95,7 +109,7 @@ router.put('/users/:id', updateUser);
  * /api/admin/users/{id}:
  *   delete:
  *     summary: Xóa tài khoản user
- *     tags: [Admin - Users]
+ *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
  *     parameters:

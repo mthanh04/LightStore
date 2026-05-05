@@ -21,10 +21,25 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Vui lòng nhập mật khẩu'],
+        required: [
+            function() {
+                return !this.googleId;
+            }, 
+            'Vui lòng nhập mật khẩu'
+        ],
         minlength: [6, 'Mật khẩu phải có ít nhất 6 ký tự'],
         select: false // Không trả password về khi query
     },
+    googleId: {
+        type: String,
+        default: null
+    },
+    wishlist: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+        }
+    ],
     role: {
         type: String,
         enum: ['user', 'admin'],
@@ -37,10 +52,11 @@ const userSchema = new mongoose.Schema({
 // ============ HOOKS ============
 
 // Hash password trước khi lưu vào DB
-userSchema.pre('save', async function () {
-    if (!this.isModified('password')) return;
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password') || !this.password) return next();
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
+    next();
 });
 
 // ============ METHODS ============

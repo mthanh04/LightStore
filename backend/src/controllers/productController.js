@@ -81,7 +81,7 @@ const getProductById = catchAsync(async (req, res, next) => {
 // @desc    Thêm sản phẩm mới (Admin)
 // @route   POST /api/products
 const createProduct = catchAsync(async (req, res, next) => {
-    const { name, price, description, category, stock } = req.body;
+    const { name, price, description, category, stock, specifications, importantInfo } = req.body;
 
     if (!name || !price || !category) {
         return next(new AppError('Vui lòng nhập đầy đủ tên, giá và danh mục', 400));
@@ -111,6 +111,8 @@ const createProduct = catchAsync(async (req, res, next) => {
         description,
         category,
         stock: stock || 0,
+        specifications: specifications || {},
+        importantInfo: importantInfo || '',
         images: imageUrls,
     });
 
@@ -130,7 +132,7 @@ const updateProduct = catchAsync(async (req, res, next) => {
         return next(new AppError('Không tìm thấy sản phẩm', 404));
     }
 
-    const allowedFields = ['name', 'price', 'description', 'category', 'stock'];
+    const allowedFields = ['name', 'price', 'description', 'category', 'stock', 'specifications', 'importantInfo'];
     allowedFields.forEach((field) => {
         if (req.body[field] !== undefined) {
             product[field] = req.body[field];
@@ -180,4 +182,23 @@ const deleteProduct = catchAsync(async (req, res, next) => {
     });
 });
 
-module.exports = { getProducts, getProductById, createProduct, updateProduct, deleteProduct };
+// @desc    Lấy sản phẩm liên quan
+// @route   GET /api/products/:id/related
+const getRelatedProducts = catchAsync(async (req, res, next) => {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+        return next(new AppError('Không tìm thấy sản phẩm', 404));
+    }
+
+    const relatedProducts = await Product.find({
+        category: product.category,
+        _id: { $ne: product._id }
+    }).limit(4);
+
+    res.json({
+        status: 'success',
+        data: relatedProducts
+    });
+});
+
+module.exports = { getProducts, getProductById, createProduct, updateProduct, deleteProduct, getRelatedProducts };

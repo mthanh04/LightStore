@@ -33,6 +33,16 @@ const productSchema = new mongoose.Schema(
             min: [0, 'Số lượng tồn kho không được âm'],
             default: 0,
         },
+        specifications: {
+            type: Map,
+            of: String,
+            default: {},
+        },
+        importantInfo: {
+            type: String,
+            trim: true,
+            default: '',
+        },
     },
     {
         timestamps: true,

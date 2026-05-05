@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getAllOrders, getMyOrders, updateOrderStatus } = require('../controllers/orderController');
+const { createOrder, getAllOrders, getMyOrders, updateOrderStatus, getOrderById, cancelOrder, deleteOrder } = require('../controllers/orderController');
 const { protect, admin } = require('../middlewares/authMiddleware');
 
 /**
@@ -138,5 +138,67 @@ router.get('/myorders', protect, getMyOrders);
  *         description: Cập nhật trạng thái thành công
  */
 router.put('/:id/status', protect, admin, updateOrderStatus);
+
+/**
+ * @swagger
+ * /api/orders/{id}:
+ *   get:
+ *     summary: Lấy chi tiết đơn hàng (Admin hoặc chính user)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Chi tiết đơn hàng
+ */
+router.get('/:id', protect, getOrderById);
+
+/**
+ * @swagger
+ * /api/orders/{id}/cancel:
+ *   put:
+ *     summary: Hủy đơn hàng (User)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Đã hủy đơn hàng
+ *       400:
+ *         description: Trạng thái không hợp lệ để hủy
+ */
+router.put('/:id/cancel', protect, cancelOrder);
+
+/**
+ * @swagger
+ * /api/orders/{id}:
+ *   delete:
+ *     summary: Xóa đơn hàng (Admin)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Xóa thành công
+ */
+router.delete('/:id', protect, admin, deleteOrder);
 
 module.exports = router;

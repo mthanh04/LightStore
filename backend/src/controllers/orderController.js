@@ -137,4 +137,71 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
     });
 });
 
-module.exports = { createOrder, getAllOrders, getMyOrders, updateOrderStatus };
+// @desc    Lấy chi tiết 1 đơn hàng (Admin/User)
+// @route   GET /api/orders/:id
+const getOrderById = catchAsync(async (req, res, next) => {
+    const order = await Order.findById(req.params.id).populate('user', 'name email');
+    if (!order) {
+        return next(new AppError('Không tìm thấy đơn hàng', 404));
+    }
+
+    // Nếu không phải admin thì chỉ được xem đơn của chính mình
+    if (req.user.role !== 'admin' && order.user && order.user._id.toString() !== req.user._id.toString()) {
+        return next(new AppError('Bạn không có quyền xem đơn hàng này', 403));
+    }
+
+    res.json({
+        status: 'success',
+        data: order,
+    });
+});
+
+// @desc    User tự hủy đơn hàng
+// @route   PUT /api/orders/:id/cancel
+const cancelOrder = catchAsync(async (req, res, next) => {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+        return next(new AppError('Không tìm thấy đơn hàng', 404));
+    }
+
+    if (order.user && order.user.toString() !== req.user._id.toString()) {
+        return next(new AppError('Bạn không có quyền thực hiện hành động này', 403));
+    }
+
+    if (order.status !== 'Pending') {
+        return next(new AppError('Chỉ có thể hủy đơn hàng ở trạng thái Chờ xử lý (Pending)', 400));
+    }
+
+    order.status = 'Cancelled';
+    await order.save();
+
+    // Hoàn lại stock (tồn kho)
+    const stockUpdatePromises = order.orderItems.map((item) =>
+        Product.findByIdAndUpdate(item.product, { $inc: { stock: item.quantity } })
+    );
+    await Promise.all(stockUpdatePromises);
+
+    res.json({
+        status: 'success',
+        message: 'Đã hủy đơn hàng thành công',
+        data: order,
+    });
+});
+
+// @desc    Admin xóa đơn hàng
+// @route   DELETE /api/orders/:id
+const deleteOrder = catchAsync(async (req, res, next) => {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+        return next(new AppError('Không tìm thấy đơn hàng', 404));
+    }
+
+    await Order.findByIdAndDelete(req.params.id);
+
+    res.json({
+        status: 'success',
+        message: 'Đã xóa đơn hàng thành công',
+    });
+});
+
+module.exports = { createOrder, getAllOrders, getMyOrders, updateOrderStatus, getOrderById, cancelOrder, deleteOrder };
