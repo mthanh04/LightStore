@@ -94,3 +94,67 @@
   - `adminMiddleware`: Kiểm tra `req.user.role === 'admin'`.
   - `errorMiddleware`: Xử lý gom lỗi (Global Error Handling).
 - **Bảo mật**: Helmet, CORS hợp lý, Rate Limiting để chống Spam API.
+
+## 6. Yêu cầu chi tiết: Product Details
+
+### 1. USER – TRANG CHI TIẾT SẢN PHẨM
+
+**🧩 1.1 Chức năng chính**
+- **Hiển thị thông tin sản phẩm**: Tên sản phẩm, Giá, Mô tả ngắn, Trạng thái (còn hàng / hết hàng).
+- **🖼️ Hiển thị hình ảnh**: Ảnh chính, Danh sách ảnh (gallery), Click để xem ảnh khác (Ảnh được lưu trữ bằng Cloudinary).
+- **🔢 Chọn số lượng**: Tăng / giảm số lượng sản phẩm, Không vượt quá số lượng tồn kho.
+- **🛒 Thêm vào giỏ hàng**: Button “Add to Cart”, Kiểm tra tồn kho trước khi thêm.
+- **📄 Mô tả chi tiết**: Thông tin đầy đủ về sản phẩm, có thể chia thành: Mô tả, Thông số kỹ thuật, Hướng dẫn sử dụng.
+- **🔗 Sản phẩm liên quan (optional)**: Hiển thị các sản phẩm cùng danh mục.
+
+**🧠 1.2 API sử dụng**
+- `GET /api/products/:id`
+
+**🔄 1.3 Luồng hoạt động**
+- User click sản phẩm từ danh sách.
+- Frontend điều hướng `/product/:id`.
+- Gọi API lấy dữ liệu.
+- Hiển thị thông tin sản phẩm.
+- User thêm vào giỏ hàng.
+
+**🎨 1.4 Yêu cầu UI**
+- Layout 2 cột (ảnh + thông tin).
+- Responsive (mobile + desktop).
+- Nút mua nổi bật.
+- Hiệu ứng hover ảnh.
+
+**⚠️ 1.5 Xử lý đặc biệt**
+- Nếu sản phẩm hết hàng: Disable nút “Add to Cart”.
+- Hiển thị loading khi đang fetch API.
+
+### 2. ADMIN – PRODUCT DETAIL (DASHBOARD)
+
+**🧩 2.1 Chức năng chính**
+- **📌 Xem thông tin sản phẩm**: ID sản phẩm, Tên, Giá, Mô tả, Danh mục, Số lượng tồn kho.
+- **✏️ Chỉnh sửa sản phẩm**: Cập nhật Tên, Giá, Mô tả, Danh mục, Tồn kho.
+- **🖼️ Quản lý hình ảnh**: Upload ảnh mới (Cloudinary), Xóa ảnh, Chọn ảnh chính.
+- **❌ Xóa sản phẩm**: Xóa khỏi hệ thống (Có confirm trước khi xóa).
+
+**🧠 2.2 API sử dụng**
+- `GET    /api/products/:id`
+- `PUT    /api/products/:id`
+- `DELETE /api/products/:id`
+
+**🔄 2.3 Luồng hoạt động**
+- Admin chọn sản phẩm trong dashboard.
+- Hệ thống hiển thị thông tin chi tiết.
+- Admin chỉnh sửa thông tin.
+- Gửi request cập nhật.
+- Backend lưu dữ liệu MongoDB.
+
+**🎨 2.4 UI Dashboard**
+- Form chỉnh sửa (input, textarea).
+- Upload ảnh drag & drop.
+- Preview ảnh.
+- Button: Save, Delete.
+
+**⚠️ 2.5 Validation**
+- Giá > 0
+- Tên không được để trống
+- Ảnh phải hợp lệ
+- Số lượng ≥ 0
