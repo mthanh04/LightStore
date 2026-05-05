@@ -139,7 +139,20 @@ const updateProduct = catchAsync(async (req, res, next) => {
         }
     });
 
-    // Nếu có ảnh mới, upload và thêm vào mảng images
+    // --- Xử lý ảnh ---
+    // Frontend gửi `existingImages` là JSON string chứa danh sách URL ảnh cũ muốn GIỮ LẠI.
+    // Nếu không gửi, giữ nguyên mảng ảnh cũ (backward compatible).
+    let baseImages = product.images;
+    if (req.body.existingImages !== undefined) {
+        try {
+            baseImages = JSON.parse(req.body.existingImages);
+        } catch {
+            baseImages = product.images;
+        }
+    }
+
+    // Nếu có ảnh mới, upload lên Cloudinary và nối vào danh sách base
+    let newUrls = [];
     if (req.files && req.files.length > 0) {
         const uploadPromises = req.files.map((file) =>
             new Promise((resolve, reject) => {
@@ -153,9 +166,10 @@ const updateProduct = catchAsync(async (req, res, next) => {
                 stream.end(file.buffer);
             })
         );
-        const newUrls = await Promise.all(uploadPromises);
-        product.images = [...product.images, ...newUrls];
+        newUrls = await Promise.all(uploadPromises);
     }
+
+    product.images = [...baseImages, ...newUrls];
 
     await product.save();
     const populated = await product.populate('category', 'name slug');

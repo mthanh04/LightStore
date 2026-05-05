@@ -1,20 +1,39 @@
-import React from 'react'
-import { ShoppingBagIcon } from '@heroicons/react/24/outline'
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/Home';
+import AdminLayout from './layouts/AdminLayout';
+import AdminDashboard from './pages/AdminDashboard';
+import Categories from './pages/admin/Categories';
+import Products from './pages/admin/Products';
+import Orders from './pages/admin/Orders';
+import Users from './pages/admin/Users';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
-      <header className="mb-8 text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome to LightStore 💡</h1>
-        <p className="text-gray-600">Your one-stop shop for modern lighting.</p>
-      </header>
-      
-      <button className="bg-primary text-white px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-amber-600 transition-colors">
-        <ShoppingBagIcon className="w-5 h-5" />
-        Start Shopping
-      </button>
-    </div>
-  )
+    <Routes>
+      {/* ── Public routes ─────────────────────────────── */}
+      <Route path="/"         element={<Home />} />
+      <Route path="/login"    element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* ── Admin-only routes (nested) ────────────────── */}
+      <Route element={<ProtectedRoute requiredRole="admin" />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin"            element={<AdminDashboard />} />
+          <Route path="/admin/products"   element={<Products />} />
+          <Route path="/admin/categories" element={<Categories />} />
+          <Route path="/admin/orders"     element={<Orders />} />
+          <Route path="/admin/users"      element={<Users />} />
+        </Route>
+      </Route>
+
+      {/* ── Fallback ──────────────────────────────────── */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
