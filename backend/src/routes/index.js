@@ -4,8 +4,10 @@ const router = express.Router();
 // Import routes
 const authRoutes = require('./authRoutes');
 const adminRoutes = require('./adminRoutes');
-// const productRoutes = require('./productRoutes');
-// const orderRoutes = require('./orderRoutes');
+const productRoutes = require('./productRoutes');
+const categoryRoutes = require('./categoryRoutes');
+const orderRoutes = require('./orderRoutes');
+const uploadRoutes = require('./uploadRoutes');
 
 /**
  * @swagger
@@ -45,7 +47,9 @@ router.get('/health', (req, res) => {
 // Gắn các route modules
 router.use('/auth', authRoutes);
 router.use('/admin', adminRoutes);
-// router.use('/products', productRoutes);
-// router.use('/orders', orderRoutes);
+router.use('/products', productRoutes);
+router.use('/categories', categoryRoutes);
+router.use('/orders', orderRoutes);
+router.use('/upload', uploadRoutes);
 
 module.exports = router;
