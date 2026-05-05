@@ -78,5 +78,52 @@ const getMe = catchAsync(async (req, res, next) => {
         data: user,
     });
 });
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-module.exports = { registerUser, loginUser, getMe };
+// @desc    Đăng nhập bằng Google
+// @route   POST /api/auth/google
+const googleLogin = catchAsync(async (req, res, next) => {
+    const { tokenId } = req.body;
+
+    if (!tokenId) {
+        return next(new AppError('Token Google không được cung cấp', 400));
+    }
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: tokenId,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const { email, name, sub: googleId } = ticket.getPayload();
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            // Tạo user mới, không cần password
+            user = await User.create({
+                name,
+                email,
+                googleId,
+            });
+        } else if (!user.googleId) {
+            user.googleId = googleId;
+            await user.save();
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                token: generateToken(user._id),
+            },
+        });
+    } catch (error) {
+        return next(new AppError('Xác thực Google thất bại', 401));
+    }
+});
+
+module.exports = { registerUser, loginUser, getMe, googleLogin };

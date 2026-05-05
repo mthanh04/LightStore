@@ -6,6 +6,7 @@ const {
     createProduct,
     updateProduct,
     deleteProduct,
+    getRelatedProducts,
 } = require('../controllers/productController');
 const { protect } = require('../middlewares/authMiddleware');
 const { admin } = require('../middlewares/authMiddleware');
@@ -76,6 +77,26 @@ router.get('/', getProducts);
  *         description: Không tìm thấy sản phẩm
  */
 router.get('/:id', getProductById);
+
+/**
+ * @swagger
+ * /api/products/{id}/related:
+ *   get:
+ *     summary: Lấy sản phẩm liên quan
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Danh sách sản phẩm liên quan
+ *       404:
+ *         description: Không tìm thấy sản phẩm
+ */
+router.get('/:id/related', getRelatedProducts);
 
 /**
  * @swagger

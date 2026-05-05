@@ -8,6 +8,7 @@ const productRoutes = require('./productRoutes');
 const categoryRoutes = require('./categoryRoutes');
 const orderRoutes = require('./orderRoutes');
 const uploadRoutes = require('./uploadRoutes');
+const userRoutes = require('./userRoutes');
 
 /**
  * @swagger
@@ -51,5 +52,6 @@ router.use('/products', productRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/orders', orderRoutes);
 router.use('/upload', uploadRoutes);
+router.use('/users', userRoutes);
 
 module.exports = router;

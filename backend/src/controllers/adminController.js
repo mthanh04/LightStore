@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const Order = require('../models/Order');
+const Product = require('../models/Product');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -94,4 +96,36 @@ const deleteUser = catchAsync(async (req, res, next) => {
     });
 });
 
-module.exports = { getAllUsers, updateUser, deleteUser };
+// @desc    Lấy thống kê dashboard (Admin)
+// @route   GET /api/admin/dashboard
+const getDashboardStats = catchAsync(async (req, res, next) => {
+    // 1. Tổng số đơn hàng và doanh thu
+    const orders = await Order.find();
+    const totalOrders = orders.length;
+
+    // Tính tổng doanh thu từ những đơn đã giao hoặc đang xử lý
+    const validOrders = orders.filter(order => order.status !== 'Cancelled');
+    const totalRevenue = validOrders.reduce((acc, order) => acc + order.totalPrice, 0);
+
+    // 2. Tổng số users
+    const totalUsers = await User.countDocuments();
+
+    // 3. Số sản phẩm sắp hết hàng (stock < 5)
+    const lowStockProducts = await Product.find({ stock: { $lt: 5 } }).select('name stock price');
+
+    // 4. Số lượng sản phẩm
+    const totalProducts = await Product.countDocuments();
+
+    res.json({
+        status: 'success',
+        data: {
+            totalRevenue,
+            totalOrders,
+            totalUsers,
+            totalProducts,
+            lowStockProducts
+        }
+    });
+});
+
+module.exports = { getAllUsers, updateUser, deleteUser, getDashboardStats };
