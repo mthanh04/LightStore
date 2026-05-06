@@ -51,4 +51,34 @@ const getWishlist = catchAsync(async (req, res, next) => {
     });
 });
 
-module.exports = { toggleWishlist, getWishlist };
+// @desc    Cập nhật thông tin cá nhân
+// @route   PUT /api/users/profile
+const updateProfile = catchAsync(async (req, res, next) => {
+    const { name, phone, address } = req.body;
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        return next(new AppError('Không tìm thấy người dùng', 404));
+    }
+
+    if (name) user.name = name;
+    if (phone !== undefined) user.phone = phone;
+    if (address !== undefined) user.address = address;
+
+    await user.save();
+
+    res.json({
+        status: 'success',
+        message: 'Cập nhật thông tin thành công',
+        data: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            address: user.address,
+            role: user.role
+        }
+    });
+});
+
+module.exports = { toggleWishlist, getWishlist, updateProfile };

@@ -1,10 +1,12 @@
 import { create } from 'zustand';
-import { loginApi, registerApi, getMeApi } from '../services/authService';
+import { loginApi, registerApi, getMeApi, updateProfileApi } from '../services/authService';
 
 export interface User {
   _id: string;
   name: string;
   email: string;
+  phone?: string;
+  address?: string;
   role: 'user' | 'admin';
 }
 
@@ -18,6 +20,7 @@ interface AuthState {
   // Actions
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
+  updateProfile: (data: { name?: string; phone?: string; address?: string }) => Promise<void>;
   logout: () => void;
   fetchUser: () => Promise<void>;
   clearError: () => void;
@@ -79,6 +82,24 @@ export const useAuthStore = create<AuthState>((set) => ({
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
         'Đăng ký thất bại. Vui lòng thử lại.';
+      set({ isLoading: false, error: message });
+      throw err;
+    }
+  },
+
+  // ─── Update Profile ─────────────────────────────────────
+  updateProfile: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const res = await updateProfileApi(data);
+      const user = res.data as User;
+      
+      localStorage.setItem(LS_USER_KEY, JSON.stringify(user));
+      set({ user, isAuthenticated: true, isLoading: false });
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        'Cập nhật thất bại. Vui lòng thử lại.';
       set({ isLoading: false, error: message });
       throw err;
     }

@@ -37,7 +37,7 @@ const AdminLayout: React.FC = () => {
       <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
         <LogoBulb size={32} interval={2500} duration={700} />
         <div>
-          <p className="text-white font-bold text-[16px]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+          <p className="text-white font-bold text-[16px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
             LightStore
           </p>
           <span className="text-[10px] font-semibold text-[#FFDA1A] uppercase tracking-widest">
@@ -61,7 +61,7 @@ const AdminLayout: React.FC = () => {
                   : 'text-white/75 hover:bg-white/10 hover:text-white'
               }`
             }
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             <Icon className="w-[18px] h-[18px] shrink-0" />
             {label}
@@ -76,7 +76,7 @@ const AdminLayout: React.FC = () => {
             {user?.name?.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0">
-            <p className="text-white text-[13px] font-semibold truncate" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+            <p className="text-white text-[13px] font-semibold truncate" style={{ fontFamily: 'Roboto, sans-serif' }}>
               {user?.name}
             </p>
             <p className="text-white/50 text-[11px] truncate">{user?.email}</p>
@@ -85,7 +85,7 @@ const AdminLayout: React.FC = () => {
         <Link
           to="/"
           className="flex items-center gap-2 px-3 py-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[4px] text-[13px] transition-colors"
-          style={{ fontFamily: 'Noto Sans, sans-serif' }}
+          style={{ fontFamily: 'Roboto, sans-serif' }}
         >
           <Squares2X2Icon className="w-4 h-4" />
           Xem trang chủ
@@ -93,7 +93,7 @@ const AdminLayout: React.FC = () => {
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-2 px-3 py-2 text-white/60 hover:text-red-300 hover:bg-white/10 rounded-[4px] text-[13px] transition-colors cursor-pointer"
-          style={{ fontFamily: 'Noto Sans, sans-serif' }}
+          style={{ fontFamily: 'Roboto, sans-serif' }}
         >
           <ArrowRightOnRectangleIcon className="w-4 h-4" />
           Đăng xuất
@@ -142,7 +142,7 @@ const AdminLayout: React.FC = () => {
           >
             <Bars3Icon className="w-5 h-5" />
           </button>
-          <span className="text-white font-bold text-[15px]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+          <span className="text-white font-bold text-[15px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
             LightStore Admin
           </span>
         </header>

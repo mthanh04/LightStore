@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { toggleWishlist, getWishlist } = require('../controllers/userController');
+const { toggleWishlist, getWishlist, updateProfile } = require('../controllers/userController');
 const { protect } = require('../middlewares/authMiddleware');
 
 /**
@@ -54,5 +54,7 @@ router.get('/wishlist', protect, getWishlist);
  *         description: Không tìm thấy sản phẩm
  */
 router.post('/wishlist', protect, toggleWishlist);
+
+router.put('/profile', protect, updateProfile);
 
 module.exports = router;

@@ -90,18 +90,18 @@ const Register: React.FC = () => {
             <LogoBulb size={42} interval={2500} duration={700} />
             <span
               className="text-2xl font-extrabold tracking-tight"
-              style={{ fontFamily: 'Poppins, sans-serif', color: '#171717' }}
+              style={{ fontFamily: 'Roboto, sans-serif', color: '#171717' }}
             >
               LightStore
             </span>
           </div>
           <h1
             className="text-3xl font-bold text-[#171717] mb-1"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             Tạo tài khoản
           </h1>
-          <p className="text-[#525252] text-[15px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+          <p className="text-[#525252] text-[15px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
             Tham gia LightStore và khám phá thế giới ánh sáng
           </p>
         </div>
@@ -116,7 +116,7 @@ const Register: React.FC = () => {
               <svg className="w-4 h-4 text-[#EF4444] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
-              <p className="text-[#991B1B] text-[13px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <p className="text-[#991B1B] text-[13px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
                 {error}
               </p>
             </div>
@@ -175,7 +175,7 @@ const Register: React.FC = () => {
                   </div>
                   <span
                     className="text-[11px] font-[600] shrink-0"
-                    style={{ color: strength.color, fontFamily: 'Nunito, sans-serif' }}
+                    style={{ color: strength.color, fontFamily: 'Roboto, sans-serif' }}
                   >
                     {strength.label}
                   </span>
@@ -210,13 +210,13 @@ const Register: React.FC = () => {
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-[#E5E5E5]" />
-            <span className="text-[#A3A3A3] text-[13px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            <span className="text-[#A3A3A3] text-[13px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
               hoặc
             </span>
             <div className="flex-1 h-px bg-[#E5E5E5]" />
           </div>
 
-          <p className="text-center text-[14px] text-[#525252]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+          <p className="text-center text-[14px] text-[#525252]" style={{ fontFamily: 'Roboto, sans-serif' }}>
             Đã có tài khoản?{' '}
             <Link to="/login" className="text-[#D946EF] font-[700] hover:underline">
               Đăng nhập ngay
@@ -225,7 +225,7 @@ const Register: React.FC = () => {
         </div>
 
         {/* Terms */}
-        <p className="text-center text-[12px] text-[#A3A3A3] mt-4" style={{ fontFamily: 'Nunito, sans-serif' }}>
+        <p className="text-center text-[12px] text-[#A3A3A3] mt-4" style={{ fontFamily: 'Roboto, sans-serif' }}>
           Bằng cách đăng ký, bạn đồng ý với{' '}
           <a href="#" className="text-[#D946EF] hover:underline">Điều khoản dịch vụ</a>{' '}
           và{' '}
