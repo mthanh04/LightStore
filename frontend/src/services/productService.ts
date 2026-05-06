@@ -6,6 +6,11 @@ export interface ProductCategory {
   slug: string;
 }
 
+export interface Specification {
+  key: string;
+  value: string;
+}
+
 export interface Product {
   _id: string;
   name: string;
@@ -14,8 +19,14 @@ export interface Product {
   category: ProductCategory | string;
   stock: number;
   images: string[];
-  specifications?: Record<string, string>;
+  // Chi tiết sản phẩm
+  brand?: string;
+  specifications?: Specification[];
+  warranty?: string;
+  usage?: string;
   importantInfo?: string;
+  weight?: string;
+  dimensions?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -79,3 +90,16 @@ export const updateProduct = async (id: string, formData: FormData): Promise<Pro
 export const deleteProduct = async (id: string): Promise<void> => {
   await api.delete(`/api/products/${id}`);
 };
+
+// GET /api/products/:id — chi tiết 1 sản phẩm
+export const getProductById = async (id: string): Promise<Product> => {
+  const res = await api.get<ProductResponse>(`/api/products/${id}`);
+  return res.data.data;
+};
+
+// GET /api/products/:id/related — sản phẩm liên quan
+export const getRelatedProducts = async (id: string): Promise<Product[]> => {
+  const res = await api.get<{ status: string; data: Product[] }>(`/api/products/${id}/related`);
+  return res.data.data;
+};
+

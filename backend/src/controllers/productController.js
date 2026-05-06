@@ -81,10 +81,24 @@ const getProductById = catchAsync(async (req, res, next) => {
 // @desc    Thêm sản phẩm mới (Admin)
 // @route   POST /api/products
 const createProduct = catchAsync(async (req, res, next) => {
-    const { name, price, description, category, stock, specifications, importantInfo } = req.body;
+    const {
+        name, price, description, category, stock,
+        brand, warranty, usage, importantInfo, weight, dimensions,
+    } = req.body;
 
     if (!name || !price || !category) {
         return next(new AppError('Vui lòng nhập đầy đủ tên, giá và danh mục', 400));
+    }
+
+    // specifications gửi dưới dạng JSON string từ FormData
+    // Ví dụ: '[{"key":"Công suất","value":"18W"},{"key":"Điện áp","value":"220V"}]'
+    let parsedSpecifications = [];
+    if (req.body.specifications) {
+        try {
+            parsedSpecifications = JSON.parse(req.body.specifications);
+        } catch {
+            parsedSpecifications = [];
+        }
     }
 
     // Xử lý upload ảnh lên Cloudinary (nếu có file gửi kèm)
@@ -111,8 +125,13 @@ const createProduct = catchAsync(async (req, res, next) => {
         description,
         category,
         stock: stock || 0,
-        specifications: specifications || {},
+        brand: brand || '',
+        specifications: parsedSpecifications,
+        warranty: warranty || '',
+        usage: usage || '',
         importantInfo: importantInfo || '',
+        weight: weight || '',
+        dimensions: dimensions || '',
         images: imageUrls,
     });
 
@@ -132,12 +151,25 @@ const updateProduct = catchAsync(async (req, res, next) => {
         return next(new AppError('Không tìm thấy sản phẩm', 404));
     }
 
-    const allowedFields = ['name', 'price', 'description', 'category', 'stock', 'specifications', 'importantInfo'];
+    // Các trường text có thể cập nhật trực tiếp
+    const allowedFields = [
+        'name', 'price', 'description', 'category', 'stock',
+        'brand', 'warranty', 'usage', 'importantInfo', 'weight', 'dimensions',
+    ];
     allowedFields.forEach((field) => {
         if (req.body[field] !== undefined) {
             product[field] = req.body[field];
         }
     });
+
+    // specifications gửi dưới dạng JSON string từ FormData
+    if (req.body.specifications !== undefined) {
+        try {
+            product.specifications = JSON.parse(req.body.specifications);
+        } catch {
+            // Giữ nguyên nếu parse lỗi
+        }
+    }
 
     // --- Xử lý ảnh ---
     // Frontend gửi `existingImages` là JSON string chứa danh sách URL ảnh cũ muốn GIỮ LẠI.
