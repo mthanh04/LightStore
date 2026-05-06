@@ -45,6 +45,11 @@ export const updateOrderStatus = async (
   return res.data.data;
 };
 
+export const getOrderById = async (id: string): Promise<Order> => {
+  const res = await api.get(`/api/orders/${id}`);
+  return res.data.data;
+};
+
 export const deleteOrder = async (id: string): Promise<void> => {
   await api.delete(`/api/orders/${id}`);
 };

@@ -95,7 +95,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
         weight:       initial.weight ?? '',
         dimensions:   initial.dimensions ?? '',
       });
-      setSpecs(initial.specifications ?? []);
+      setSpecs((initial.specifications ?? []).filter(Boolean));
     } else {
       setForm(EMPTY);
       setSpecs([]);
@@ -313,7 +313,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
           <SectionTitle>Thông số kỹ thuật</SectionTitle>
 
           <div className="space-y-2">
-            {specs.map((s, idx) => (
+            {specs.filter(Boolean).map((s, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <input
                   className="flex-1 h-[38px] px-3 border border-[#DFDFDF] rounded-[4px] text-[14px] text-[#111111] placeholder:text-[#A3A3A3] outline-none focus:border-[#003399] transition-all"

@@ -247,44 +247,96 @@ const Home: React.FC = () => {
             </Reveal>
           </div>
 
-          {loadingCats ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="aspect-square bg-[#F0F0F0] rounded-[16px] mb-2" />
-                  <div className="h-3 bg-[#F0F0F0] rounded w-2/3 mx-auto" />
+          {/* ── Shared category card ── */}
+          {(() => {
+            const CatCard = ({ cat }: { cat: Category }) => (
+              <Link
+                to={`/shop?category=${cat._id}`}
+                className="group flex flex-col items-center gap-2 cursor-pointer"
+              >
+                <div className="w-full aspect-square rounded-[16px] bg-white border border-[#E5E5E5] overflow-hidden flex items-center justify-center text-4xl group-hover:border-[#D946EF] group-hover:shadow-product-hover group-hover:-translate-y-1 transition-all duration-200">
+                  {cat.image ? (
+                    <img
+                      src={cat.image}
+                      alt={cat.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    CAT_ICONS[cat.slug] ?? CAT_ICONS.default
+                  )}
                 </div>
-              ))}
-            </div>
-          ) : categories.length === 0 ? null : (
-            // staggerContainer orchestrates child stagger automatically
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px', amount: 0.15 }}
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
-            >
-              {categories.map((cat) => (
-                <motion.div key={cat._id} variants={staggerItemZoom}>
-                  <Link
-                    to={`/shop?category=${cat._id}`}
-                    className="group flex flex-col items-center gap-2 cursor-pointer"
-                  >
-                    <div className="w-full aspect-square rounded-[16px] bg-white border border-[#E5E5E5] flex items-center justify-center text-4xl group-hover:border-[#D946EF] group-hover:shadow-product-hover group-hover:-translate-y-1 transition-all duration-200">
-                      {CAT_ICONS[cat.slug] ?? CAT_ICONS.default}
+                <span
+                  className="text-[13px] font-[700] text-[#525252] group-hover:text-[#D946EF] transition-colors text-center"
+                  style={{ fontFamily: 'Roboto, sans-serif' }}
+                >
+                  {cat.name}
+                </span>
+              </Link>
+            );
+
+            if (loadingCats) {
+              return (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="aspect-square bg-[#F0F0F0] rounded-[16px] mb-2" />
+                      <div className="h-3 bg-[#F0F0F0] rounded w-2/3 mx-auto" />
                     </div>
-                    <span
-                      className="text-[13px] font-[700] text-[#525252] group-hover:text-[#D946EF] transition-colors text-center"
-                      style={{ fontFamily: 'Roboto, sans-serif' }}
-                    >
-                      {cat.name}
-                    </span>
-                  </Link>
+                  ))}
+                </div>
+              );
+            }
+
+            if (categories.length === 0) return null;
+
+            /* ── ≤ 5: static stagger grid ── */
+            if (categories.length <= 5) {
+              return (
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-80px', amount: 0.15 }}
+                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+                >
+                  {categories.map((cat) => (
+                    <motion.div key={cat._id} variants={staggerItemZoom}>
+                      <CatCard cat={cat} />
+                    </motion.div>
+                  ))}
                 </motion.div>
-              ))}
-            </motion.div>
-          )}
+              );
+            }
+
+            /* ── > 5: infinite marquee slider ── */
+            // Duplicate the list to create seamless loop (50% translateX trick)
+            const doubled = [...categories, ...categories];
+            // Width per card: ~160px + 16px gap, speed scales with count
+            const speed = Math.max(18, categories.length * 3);
+
+            return (
+              <div className="relative overflow-hidden marquee-track">
+                {/* Fade edge overlays */}
+                <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-[#FAFAFA] to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-[#FAFAFA] to-transparent z-10 pointer-events-none" />
+
+                <div
+                  className="flex gap-4 animate-marquee"
+                  style={{ animationDuration: `${speed}s`, width: 'max-content' }}
+                >
+                  {doubled.map((cat, idx) => (
+                    <div
+                      key={`${cat._id}-${idx}`}
+                      className="w-[140px] sm:w-[160px] shrink-0"
+                    >
+                      <CatCard cat={cat} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+
         </div>
       </section>
 

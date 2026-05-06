@@ -13,6 +13,7 @@ import {
 import { StarIcon } from '@heroicons/react/24/solid';
 import { getProductById, getRelatedProducts, type Product } from '../../services/productService';
 import { useCartStore } from '../../store/cartStore';
+import { useAuthStore } from '../../store/authStore';
 import { useToast } from '../../components/common/Toast';
 import ProductCard from '../../components/product/ProductCard';
 
@@ -57,6 +58,7 @@ const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addItem } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
   const { showToast } = useToast();
 
   const [product, setProduct]   = useState<Product | null>(null);
@@ -93,6 +95,13 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = () => {
     if (!product || product.stock === 0) return;
+
+    if (!isAuthenticated) {
+      showToast('Vui lòng đăng nhập để thêm vào giỏ hàng', 'error');
+      navigate('/login');
+      return;
+    }
+
     for (let i = 0; i < qty; i++) {
       addItem({
         _id: product._id,

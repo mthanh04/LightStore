@@ -97,27 +97,18 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   addItem: async (newItem) => {
     const token = localStorage.getItem('ls_token');
-    let updated: CartItem[];
 
-    if (token) {
-      try {
-        updated = await addToCartApi(newItem._id, 1);
-      } catch (error) {
-        console.error(error);
-        return;
-      }
-    } else {
-      const items = get().items;
-      const existing = items.find((i) => i._id === newItem._id);
-      if (existing) {
-        updated = items.map((i) =>
-          i._id === newItem._id
-            ? { ...i, quantity: Math.min(i.quantity + 1, i.stock) }
-            : i
-        );
-      } else {
-        updated = [...items, { ...newItem, quantity: 1 }];
-      }
+    // Chặn guest — yêu cầu đăng nhập
+    if (!token) {
+      throw new Error('UNAUTHENTICATED');
+    }
+
+    let updated: CartItem[];
+    try {
+      updated = await addToCartApi(newItem._id, 1);
+    } catch (error) {
+      console.error(error);
+      return;
     }
 
     saveCart(updated);

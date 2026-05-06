@@ -7,6 +7,7 @@ const {
     deleteCategory,
 } = require('../controllers/categoryController');
 const { protect, admin } = require('../middlewares/authMiddleware');
+const upload = require('../middlewares/uploadMiddleware');
 
 /**
  * @swagger
@@ -51,7 +52,7 @@ router.get('/', getAllCategories);
  *       201:
  *         description: Danh mục được tạo thành công
  */
-router.post('/', protect, admin, createCategory);
+router.post('/', protect, admin, upload.single('image'), createCategory);
 
 /**
  * @swagger
@@ -79,7 +80,7 @@ router.post('/', protect, admin, createCategory);
  *       200:
  *         description: Cập nhật thành công
  */
-router.put('/:id', protect, admin, updateCategory);
+router.put('/:id', protect, admin, upload.single('image'), updateCategory);
 
 /**
  * @swagger
