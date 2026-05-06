@@ -13,7 +13,7 @@ const fmt = (n: number) => n.toLocaleString('vi-VN') + '₫';
 
 const Toast = ({ msg, type }: { msg: string; type: 'success' | 'error' }) => (
   <div className={`fixed top-5 right-5 z-[100] px-4 py-3 rounded-[4px] text-white text-[14px] shadow-lg ${type === 'success' ? 'bg-[#0A8A00]' : 'bg-[#CC0008]'}`}
-    style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+    style={{ fontFamily: 'Roboto, sans-serif' }}>
     {type === 'success' ? '✓' : '✕'} {msg}
   </div>
 );
@@ -49,18 +49,18 @@ const ConfirmDelete = ({ target, onClose, onConfirm, deleting }: {
           <div className="w-10 h-10 rounded-full bg-[#FEE2E2] flex items-center justify-center shrink-0">
             <TrashIcon className="w-5 h-5 text-[#CC0008]" />
           </div>
-          <h3 className="text-[17px] font-bold text-[#111111]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>Xóa sản phẩm</h3>
+          <h3 className="text-[17px] font-bold text-[#111111]" style={{ fontFamily: 'Roboto, sans-serif' }}>Xóa sản phẩm</h3>
         </div>
-        <p className="text-[14px] text-[#484848] mb-5" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+        <p className="text-[14px] text-[#484848] mb-5" style={{ fontFamily: 'Roboto, sans-serif' }}>
           Bạn có chắc muốn xóa <span className="font-bold text-[#111111]">"{target.name}"</span>? Hành động không thể hoàn tác.
         </p>
         <div className="flex justify-end gap-3">
           <button onClick={onClose} disabled={deleting}
             className="h-[44px] px-5 border-2 border-[#DFDFDF] text-[#484848] rounded-[4px] text-[14px] font-bold hover:border-[#003399] hover:text-[#003399] transition-all cursor-pointer disabled:opacity-50"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}>Hủy</button>
+            style={{ fontFamily: 'Roboto, sans-serif' }}>Hủy</button>
           <button onClick={onConfirm} disabled={deleting}
             className="h-[44px] px-6 bg-[#CC0008] text-white rounded-[4px] text-[14px] font-bold hover:bg-[#a80006] flex items-center gap-2 cursor-pointer disabled:opacity-50"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+            style={{ fontFamily: 'Roboto, sans-serif' }}>
             {deleting && <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>}
             {deleting ? 'Đang xóa...' : 'Xóa'}
           </button>
@@ -158,16 +158,16 @@ const Products: React.FC = () => {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-[28px] font-bold text-[#111111] leading-tight" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+          <h1 className="text-[28px] font-bold text-[#111111] leading-tight" style={{ fontFamily: 'Roboto, sans-serif' }}>
             Sản phẩm
           </h1>
-          <p className="text-[14px] text-[#767676] mt-0.5" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+          <p className="text-[14px] text-[#767676] mt-0.5" style={{ fontFamily: 'Roboto, sans-serif' }}>
             {loading ? '—' : `${pagination.totalItems} sản phẩm`}
           </p>
         </div>
         <button onClick={handleAdd} id="btn-add-product"
           className="flex items-center gap-2 h-[44px] px-5 bg-[#003399] text-white rounded-[4px] text-[15px] font-bold hover:bg-[#002B80] transition-all cursor-pointer shrink-0"
-          style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+          style={{ fontFamily: 'Roboto, sans-serif' }}>
           <PlusIcon className="w-4 h-4" />
           Thêm sản phẩm
         </button>
@@ -183,19 +183,19 @@ const Products: React.FC = () => {
             <input type="text" placeholder="Tìm sản phẩm..." value={search}
               onChange={(e) => applySearch(e.target.value)}
               className="h-[40px] pl-9 pr-3 w-56 border border-[#DFDFDF] rounded-[4px] text-[14px] text-[#111111] placeholder:text-[#767676] outline-none focus:border-[#003399] transition-colors"
-              style={{ fontFamily: 'Noto Sans, sans-serif' }} />
+              style={{ fontFamily: 'Roboto, sans-serif' }} />
           </div>
           {/* Category filter */}
           <select value={catFilter} onChange={(e) => applyCat(e.target.value)}
             className="h-[40px] px-3 border border-[#DFDFDF] rounded-[4px] text-[14px] text-[#111111] bg-white outline-none focus:border-[#003399] cursor-pointer transition-colors"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+            style={{ fontFamily: 'Roboto, sans-serif' }}>
             <option value="">Tất cả danh mục</option>
             {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
           </select>
           {/* Sort */}
           <select value={sort} onChange={(e) => applySort(e.target.value)}
             className="h-[40px] px-3 border border-[#DFDFDF] rounded-[4px] text-[14px] text-[#111111] bg-white outline-none focus:border-[#003399] cursor-pointer transition-colors"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+            style={{ fontFamily: 'Roboto, sans-serif' }}>
             <option value="newest">Mới nhất</option>
             <option value="price_asc">Giá tăng dần</option>
             <option value="price_desc">Giá giảm dần</option>
@@ -210,7 +210,7 @@ const Products: React.FC = () => {
               <tr className="bg-[#F5F5F5] border-b border-[#DFDFDF]">
                 {['Sản phẩm', 'Danh mục', 'Giá', 'Tồn kho', 'Ngày thêm', 'Thao tác'].map(h => (
                   <th key={h} className="px-4 py-3 text-[12px] font-bold text-[#484848] uppercase tracking-wide whitespace-nowrap"
-                    style={{ fontFamily: 'Noto Sans, sans-serif' }}>{h}</th>
+                    style={{ fontFamily: 'Roboto, sans-serif' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -219,12 +219,12 @@ const Products: React.FC = () => {
                 <tr><td colSpan={6} className="text-center py-16">
                   <div className="flex flex-col items-center gap-3 text-[#767676]">
                     <CubeIcon className="w-10 h-10 opacity-30" />
-                    <p className="text-[14px]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+                    <p className="text-[14px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
                       {search || catFilter ? 'Không tìm thấy sản phẩm phù hợp' : 'Chưa có sản phẩm nào'}
                     </p>
                     {!search && !catFilter && (
                       <button onClick={handleAdd} className="text-[#003399] font-semibold text-[13px] hover:underline cursor-pointer"
-                        style={{ fontFamily: 'Noto Sans, sans-serif' }}>+ Thêm sản phẩm đầu tiên</button>
+                        style={{ fontFamily: 'Roboto, sans-serif' }}>+ Thêm sản phẩm đầu tiên</button>
                     )}
                   </div>
                 </td></tr>
@@ -240,24 +240,24 @@ const Products: React.FC = () => {
                           {img ? <img src={img} alt={p.name} className="w-full h-full object-cover" /> : <CubeIcon className="w-6 h-6 text-[#DFDFDF] m-3" />}
                         </div>
                         <span className="text-[15px] font-bold text-[#111111] line-clamp-2 max-w-[200px]"
-                          style={{ fontFamily: 'Noto Sans, sans-serif' }}>{p.name}</span>
+                          style={{ fontFamily: 'Roboto, sans-serif' }}>{p.name}</span>
                       </div>
                     </td>
                     {/* Category */}
                     <td className="px-4 py-3">
                       {cat ? (
                         <span className="px-2 py-0.5 text-[12px] font-bold bg-[#003399] text-white rounded-[2px]"
-                          style={{ fontFamily: 'Noto Sans, sans-serif' }}>{cat.name}</span>
+                          style={{ fontFamily: 'Roboto, sans-serif' }}>{cat.name}</span>
                       ) : <span className="text-[#767676]">—</span>}
                     </td>
                     {/* Price */}
                     <td className="px-4 py-3 text-[15px] font-bold text-[#111111] whitespace-nowrap"
-                      style={{ fontFamily: 'Noto Sans, sans-serif' }}>{fmt(p.price)}</td>
+                      style={{ fontFamily: 'Roboto, sans-serif' }}>{fmt(p.price)}</td>
                     {/* Stock */}
                     <td className="px-4 py-3"><StockBadge stock={p.stock} /></td>
                     {/* Date */}
                     <td className="px-4 py-3 text-[13px] text-[#767676] whitespace-nowrap"
-                      style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+                      style={{ fontFamily: 'Roboto, sans-serif' }}>
                       {p.createdAt ? new Date(p.createdAt).toLocaleDateString('vi-VN') : '—'}
                     </td>
                     {/* Actions */}
@@ -283,7 +283,7 @@ const Products: React.FC = () => {
         {/* Pagination */}
         {pagination.totalPages > 1 && (
           <div className="flex items-center justify-between px-5 py-4 border-t border-[#DFDFDF]">
-            <p className="text-[13px] text-[#767676]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+            <p className="text-[13px] text-[#767676]" style={{ fontFamily: 'Roboto, sans-serif' }}>
               Trang {pagination.currentPage} / {pagination.totalPages} ({pagination.totalItems} sản phẩm)
             </p>
             <div className="flex items-center gap-1">
@@ -305,7 +305,7 @@ const Products: React.FC = () => {
                     className={`w-8 h-8 flex items-center justify-center rounded-[4px] text-[13px] font-bold transition-all cursor-pointer ${
                       n === page ? 'bg-[#003399] text-white' : 'border border-[#DFDFDF] text-[#484848] hover:border-[#003399] hover:text-[#003399]'
                     }`}
-                    style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+                    style={{ fontFamily: 'Roboto, sans-serif' }}>
                     {n}
                   </button>
                 ))}

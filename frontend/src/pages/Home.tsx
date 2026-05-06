@@ -1,196 +1,402 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   ShoppingBagIcon,
   SparklesIcon,
-  ArrowRightOnRectangleIcon,
-  UserCircleIcon,
+  ArrowRightIcon,
+  TruckIcon,
+  ShieldCheckIcon,
+  CheckBadgeIcon,
+  PhoneArrowUpRightIcon,
+  GlobeEuropeAfricaIcon,
 } from '@heroicons/react/24/outline';
-import { useAuthStore } from '../store/authStore';
-import Button from '../components/ui/Button';
-import LogoBulb from '../components/ui/LogoBulb';
+import ProductCard from '../components/product/ProductCard';
+import { getProducts, type Product } from '../services/productService';
+import { getCategories, type Category } from '../services/categoryService';
+import bannerImg from '../assets/images/banner_3.png';
+
+/* ─── Why Choose Us data ──────────────────────── */
+const FEATURES = [
+  {
+    icon: TruckIcon,
+    title: 'GIAO HÀNG NHANH',
+    desc: 'Giao hàng trong 24h nội thành, toàn quốc trong 3 ngày.',
+    color: '#1D4ED8', // Blue
+  },
+  {
+    icon: GlobeEuropeAfricaIcon,
+    title: 'THÂN THIỆN',
+    desc: 'Tất cả sản phẩm đạt chứng chỉ tiết kiệm năng lượng Energy Star.',
+    color: '#4ADE80', // Green
+  },
+  {
+    icon: ShieldCheckIcon,
+    title: 'BẢO HÀNH 2 NĂM',
+    desc: 'Cam kết bảo hành toàn bộ sản phẩm, đổi trả miễn phí trong 30 ngày.',
+    color: '#FBBF24', // Yellow
+  },
+  {
+    icon: CheckBadgeIcon,
+    title: 'SẢN PHẨM CHÍNH HÃNG',
+    desc: '100% sản phẩm chính hãng, nguồn gốc rõ ràng.',
+    color: '#A78BFA', // Purple
+  },
+  {
+    icon: PhoneArrowUpRightIcon,
+    title: 'HỖ TRỢ TẬN TÂM',
+    desc: 'Đội ngũ tư vấn chuyên nghiệp, hỗ trợ 24/7 mọi lúc mọi nơi.',
+    color: '#22D3EE', // Cyan
+  },
+];
+
+/* ─── Category icon map ───────────────────────── */
+const CAT_ICONS: Record<string, string> = {
+  default: '💡',
+  'den-tran': '🔆',
+  'den-ban': '🕯️',
+  'den-trang-tri': '✨',
+  'den-led': '💫',
+  'den-tuong': '🌟',
+};
 
 const Home: React.FC = () => {
-  const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const [trendingProducts, setTrendingProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [loadingCats, setLoadingCats] = useState(true);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  useEffect(() => {
+    getProducts({ page: 1, limit: 8 })
+      .then((res) => setTrendingProducts(res.data))
+      .catch(() => {})
+      .finally(() => setLoadingProducts(false));
+
+    getCategories()
+      .then(setCategories)
+      .catch(() => {})
+      .finally(() => setLoadingCats(false));
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      {/* Navbar */}
-      <header className="bg-[#FAFAFA] border-b border-[#E5E5E5] shadow-subtle sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <LogoBulb size={36} interval={2500} duration={700} />
-            <span
-              className="text-xl font-extrabold text-[#171717]"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
-            >
-              LightStore
-            </span>
-          </div>
 
-          {/* Nav actions */}
-          <div className="flex items-center gap-3">
-            {isAuthenticated && user ? (
-              <>
-                {user.role === 'admin' && (
-                  <Link to="/admin">
-                    <Button variant="secondary" size="sm">
-                      Admin Dashboard
-                    </Button>
-                  </Link>
-                )}
-                <div className="flex items-center gap-2 text-[#525252]">
-                  <UserCircleIcon className="w-5 h-5 text-[#D946EF]" />
-                  <span className="text-[14px] font-[600]" style={{ fontFamily: 'Nunito, sans-serif' }}>
-                    {user.name}
-                  </span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1.5 text-[13px] text-[#525252] hover:text-[#EF4444] transition-colors cursor-pointer"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
-                >
-                  <ArrowRightOnRectangleIcon className="w-4 h-4" />
-                  Đăng xuất
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login">
-                  <Button variant="ghost" size="sm">Đăng nhập</Button>
-                </Link>
-                <Link to="/register">
-                  <Button variant="primary" size="sm">Đăng ký</Button>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      {/* ── Hero Section ────────────────────────── */}
+      <section 
+        className="relative overflow-hidden py-24 md:py-36 px-6 flex items-center justify-center min-h-[500px]"
+        style={{
+          backgroundImage: `url(${bannerImg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* Dark overlay for text readability, but transparent enough for sharp image */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/40 via-[#171717]/20 to-[#171717]/60" />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 px-6">
+        {/* Symmetrical Gradient bg for magical feel */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none mix-blend-color-dodge opacity-50"
           style={{
             background:
-              'radial-gradient(ellipse at 20% 50%, rgba(217,70,239,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 30%, rgba(34,211,238,0.06) 0%, transparent 60%)',
+              'radial-gradient(circle at 25% 50%, rgba(217,70,239,0.4) 0%, transparent 40%), radial-gradient(circle at 75% 50%, rgba(34,211,238,0.4) 0%, transparent 40%)',
           }}
         />
-        <div className="max-w-4xl mx-auto text-center relative">
-          <div className="inline-flex items-center gap-2 bg-[#FDF4FF] border border-[#F5D0FE] rounded-full px-4 py-1.5 mb-6">
-            <SparklesIcon className="w-4 h-4 text-[#D946EF]" />
+
+        <div className="max-w-4xl mx-auto text-center relative z-10 w-full">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6">
+            <SparklesIcon className="w-4 h-4 text-[#F5D0FE]" />
             <span
-              className="text-[12px] font-[700] text-[#D946EF] uppercase tracking-widest"
-              style={{ fontFamily: 'Nunito, sans-serif' }}
+              className="text-[11px] font-[700] text-[#F5D0FE] uppercase tracking-widest"
+              style={{ fontFamily: 'Roboto, sans-serif' }}
             >
-              New Collection 2026
+              Bộ sưu tập mới 2026
             </span>
           </div>
 
+          {/* Headline */}
           <h1
-            className="text-5xl md:text-6xl font-extrabold text-[#171717] leading-tight mb-6"
-            style={{ fontFamily: 'Poppins, sans-serif', letterSpacing: '0.02em' }}
+            className="text-[40px] sm:text-[52px] md:text-[64px] font-[800] text-white leading-tight mb-6 drop-shadow-lg"
+            style={{ fontFamily: 'Roboto, sans-serif', letterSpacing: '-0.01em' }}
           >
             Thắp sáng không gian{' '}
             <span
-              className="bg-clip-text text-transparent"
-              style={{ backgroundImage: 'linear-gradient(135deg, #D946EF, #22D3EE)' }}
+              className="bg-clip-text text-transparent drop-shadow-none"
+              style={{ backgroundImage: 'linear-gradient(135deg, #F0ABFC, #67E8F9)' }}
             >
               của bạn
             </span>
           </h1>
 
           <p
-            className="text-lg text-[#525252] max-w-2xl mx-auto mb-10 leading-relaxed"
-            style={{ fontFamily: 'Nunito, sans-serif' }}
+            className="text-[17px] text-white/90 max-w-2xl mx-auto mb-10 leading-relaxed font-[500] drop-shadow-md"
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             Khám phá bộ sưu tập đèn chiếu sáng cao cấp — thiết kế hiện đại, tiết kiệm năng lượng,
             phù hợp cho mọi không gian sống và làm việc.
           </p>
 
+          {/* CTAs */}
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <Button
-              variant="primary"
-              size="lg"
-              className="btn-pulse"
-              onClick={() => {}}
+            <Link
+              to="/shop"
+              className="inline-flex items-center gap-2 h-[54px] px-9 bg-[#D946EF] hover:bg-[#C026D3] text-white text-[16px] font-[700] rounded-full shadow-medium hover:shadow-large transition-all btn-pulse"
+              style={{ fontFamily: 'Roboto, sans-serif' }}
             >
               <ShoppingBagIcon className="w-5 h-5" />
               Mua sắm ngay
-            </Button>
-            <Button variant="secondary" size="lg">
+            </Link>
+            <Link
+              to="/shop"
+              className="inline-flex items-center gap-2 h-[54px] px-9 border-2 border-white/50 text-white text-[16px] font-[700] rounded-full hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm"
+              style={{ fontFamily: 'Roboto, sans-serif' }}
+            >
               Xem bộ sưu tập
-            </Button>
+              <ArrowRightIcon className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Feature Cards */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2
-            className="text-3xl font-bold text-[#171717] text-center mb-12"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
-          >
-            Vì sao chọn LightStore?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                emoji: '⚡',
-                title: 'Giao hàng nhanh',
-                desc: 'Nhận hàng trong 24h tại nội thành, toàn quốc trong 3 ngày.',
-                accent: '#D946EF',
-                bg: '#FDF4FF',
-              },
-              {
-                emoji: '🌿',
-                title: 'Thân thiện môi trường',
-                desc: 'Tất cả sản phẩm đều đạt chứng chỉ tiết kiệm năng lượng Energy Star.',
-                accent: '#22C55E',
-                bg: '#F0FDF4',
-              },
-              {
-                emoji: '🛡️',
-                title: 'Bảo hành 2 năm',
-                desc: 'Cam kết bảo hành toàn bộ sản phẩm, đổi trả miễn phí trong 30 ngày.',
-                accent: '#22D3EE',
-                bg: '#F0FDFE',
-              },
-            ].map((f) => (
-              <div
-                key={f.title}
-                className="bg-white rounded-[16px] p-6 border border-[#E5E5E5] shadow-subtle hover:shadow-medium transition-all duration-200 hover:-translate-y-1 cursor-default"
+      {/* ── Featured Categories ─────────────────── */}
+      <section className="py-14 px-4 md:px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <p
+                className="text-[12px] font-[700] text-[#D946EF] uppercase tracking-widest mb-1"
+                style={{ fontFamily: 'Roboto, sans-serif' }}
               >
-                <div
-                  className="w-12 h-12 rounded-[12px] flex items-center justify-center text-2xl mb-4"
-                  style={{ backgroundColor: f.bg }}
-                >
-                  {f.emoji}
+                Danh mục
+              </p>
+              <h2
+                className="text-[28px] md:text-[34px] font-[800] text-[#171717]"
+                style={{ fontFamily: 'Roboto, sans-serif' }}
+              >
+                Khám phá danh mục
+              </h2>
+            </div>
+            <Link
+              to="/shop"
+              className="hidden md:flex items-center gap-1 text-[14px] font-[600] text-[#D946EF] hover:underline"
+              style={{ fontFamily: 'Roboto, sans-serif' }}
+            >
+              Xem tất cả <ArrowRightIcon className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {loadingCats ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-square bg-[#F0F0F0] rounded-[16px] mb-2" />
+                  <div className="h-3 bg-[#F0F0F0] rounded w-2/3 mx-auto" />
                 </div>
-                <h3
-                  className="text-[18px] font-bold text-[#171717] mb-2"
-                  style={{ fontFamily: 'Poppins, sans-serif' }}
+              ))}
+            </div>
+          ) : categories.length === 0 ? null : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {categories.map((cat) => (
+                <Link
+                  key={cat._id}
+                  to={`/shop?category=${cat._id}`}
+                  className="group flex flex-col items-center gap-2 cursor-pointer"
                 >
-                  {f.title}
-                </h3>
-                <p
-                  className="text-[14px] text-[#525252] leading-relaxed"
-                  style={{ fontFamily: 'Nunito, sans-serif' }}
+                  <div className="w-full aspect-square rounded-[16px] bg-white border border-[#E5E5E5] flex items-center justify-center text-4xl group-hover:border-[#D946EF] group-hover:shadow-product-hover group-hover:-translate-y-1 transition-all duration-200">
+                    {CAT_ICONS[cat.slug] ?? CAT_ICONS.default}
+                  </div>
+                  <span
+                    className="text-[13px] font-[700] text-[#525252] group-hover:text-[#D946EF] transition-colors text-center"
+                    style={{ fontFamily: 'Roboto, sans-serif' }}
+                  >
+                    {cat.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── Trending Products ───────────────────── */}
+      <section className="py-14 px-4 md:px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <p
+                className="text-[12px] font-[700] text-[#D946EF] uppercase tracking-widest mb-1"
+                style={{ fontFamily: 'Roboto, sans-serif' }}
+              >
+                Nổi bật
+              </p>
+              <h2
+                className="text-[28px] md:text-[34px] font-[800] text-[#171717]"
+                style={{ fontFamily: 'Roboto, sans-serif' }}
+              >
+                Sản phẩm bán chạy
+              </h2>
+            </div>
+            <Link
+              to="/shop"
+              className="hidden md:flex items-center gap-1 text-[14px] font-[600] text-[#D946EF] hover:underline"
+              style={{ fontFamily: 'Roboto, sans-serif' }}
+            >
+              Xem tất cả <ArrowRightIcon className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {loadingProducts ? (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="bg-[#F5F5F5] rounded-[16px] animate-pulse">
+                  <div className="aspect-square rounded-t-[16px] bg-[#E5E5E5]" />
+                  <div className="p-4 space-y-2">
+                    <div className="h-3 bg-[#E5E5E5] rounded w-2/3" />
+                    <div className="h-4 bg-[#E5E5E5] rounded w-full" />
+                    <div className="h-5 bg-[#E5E5E5] rounded w-1/3" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {trendingProducts.map((p) => (
+                <ProductCard key={p._id} product={p} />
+              ))}
+            </div>
+          )}
+
+          {/* Mobile see all */}
+          <div className="md:hidden mt-6 text-center">
+            <Link
+              to="/shop"
+              className="inline-flex items-center gap-2 h-[44px] px-8 border-2 border-[#D946EF] text-[#D946EF] rounded-full text-[14px] font-[700] hover:bg-[#FDF4FF] transition-all"
+              style={{ fontFamily: 'Roboto, sans-serif' }}
+            >
+              Xem tất cả sản phẩm <ArrowRightIcon className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Why Choose Us ──────────────────────── */}
+      <section className="py-20 px-4 md:px-6 bg-[#FAFAFA]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <p
+              className="text-[13px] font-[800] text-[#0ea5e9] uppercase tracking-wider mb-2"
+              style={{ fontFamily: 'Roboto, sans-serif' }}
+            >
+              Cam kết của chúng tôi
+            </p>
+            <h2
+              className="text-[32px] md:text-[40px] font-[800] text-[#1e293b]"
+              style={{ fontFamily: 'Roboto, sans-serif' }}
+            >
+              VÌ SAO CHỌN LIGHTSTORE?
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 gap-y-12 mt-12">
+            {FEATURES.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <div
+                  key={i}
+                  className="bg-white rounded-[20px] p-6 pt-14 relative text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 flex flex-col items-center"
                 >
-                  {f.desc}
-                </p>
+                  {/* Floating Icon */}
+                  <div
+                    className="absolute -top-10 left-1/2 -translate-x-1/2 w-[84px] h-[84px] rounded-full border-[8px] border-[#FAFAFA] flex items-center justify-center text-white shadow-sm"
+                    style={{
+                      background: `linear-gradient(135deg, ${f.color} 0%, ${f.color}dd 100%)`,
+                    }}
+                  >
+                    <Icon className="w-8 h-8" strokeWidth={2} />
+                  </div>
+
+                  <h3
+                    className="text-[15px] font-[800] text-[#1e293b] mb-3 uppercase"
+                    style={{ fontFamily: 'Roboto, sans-serif' }}
+                  >
+                    {f.title}
+                  </h3>
+                  <p
+                    className="text-[13px] text-[#64748b] leading-relaxed flex-1"
+                    style={{ fontFamily: 'Roboto, sans-serif' }}
+                  >
+                    {f.desc}
+                  </p>
+                  
+                  {/* Bottom Dash */}
+                  <div 
+                    className="w-8 h-1 rounded-full mt-5"
+                    style={{ backgroundColor: f.color }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA Banner ─────────────────────────── */}
+      <section className="py-10 px-4 md:px-6 mb-10">
+        <div className="max-w-7xl mx-auto">
+          <div
+            className="rounded-[24px] overflow-hidden relative shadow-2xl"
+            style={{
+              background: 'linear-gradient(135deg, #001e4d 0%, #004e92 100%)',
+            }}
+          >
+            {/* Ambient glow effects */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+              <div className="absolute -left-[10%] top-[20%] w-[40%] h-[60%] bg-[#38bdf8] opacity-20 blur-[100px] rounded-full" />
+              <div className="absolute -right-[10%] bottom-[10%] w-[30%] h-[50%] bg-[#818cf8] opacity-20 blur-[80px] rounded-full" />
+              {/* Subtle lines/waves could be added here via SVG background if needed */}
+              <div className="absolute right-0 top-0 w-[50%] h-full opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent" />
+            </div>
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-center py-12 md:py-16 px-8 md:px-20 gap-8 md:gap-16">
+              
+              {/* Shield Icon Graphic */}
+              <div className="relative shrink-0 flex items-center justify-center">
+                <div className="absolute inset-0 bg-[#38bdf8] blur-[40px] opacity-40 rounded-full" />
+                <div className="w-[180px] h-[180px] md:w-[220px] md:h-[220px] relative flex items-center justify-center">
+                  <ShieldCheckIcon className="w-full h-full text-white opacity-90 drop-shadow-[0_0_30px_rgba(56,189,248,0.8)]" strokeWidth={1} />
+                </div>
               </div>
-            ))}
+
+              {/* Text & CTA */}
+              <div className="text-center md:text-left flex-1 max-w-xl">
+                <h2
+                  className="text-[28px] md:text-[38px] font-[800] text-white leading-tight mb-4"
+                  style={{ fontFamily: 'Roboto, sans-serif' }}
+                >
+                  BẮT ĐẦU <br />
+                  <span className="text-[#fbbf24]">TRANG TRÍ KHÔNG GIAN</span> <br />
+                  CỦA BẠN
+                </h2>
+                <p
+                  className="text-[#e2e8f0] text-[15px] mb-8 leading-relaxed font-[500]"
+                  style={{ fontFamily: 'Roboto, sans-serif' }}
+                >
+                  Hàng trăm mẫu đèn cao cấp đang chờ bạn khám phá.<br />
+                  Miễn phí vận chuyển đơn hàng đầu tiên!
+                </p>
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <Link
+                    to="/shop"
+                    className="inline-flex items-center justify-center gap-2 h-[50px] px-8 bg-[#fbbf24] text-[#1e293b] text-[15px] font-[800] rounded-full hover:bg-[#f59e0b] transition-all shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_25px_rgba(251,191,36,0.5)]"
+                    style={{ fontFamily: 'Roboto, sans-serif' }}
+                  >
+                    <ShoppingBagIcon className="w-5 h-5" strokeWidth={2.5} />
+                    MUA SẮM NGAY
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -6,6 +6,8 @@ export interface AuthResponse {
     _id: string;
     name: string;
     email: string;
+    phone?: string;
+    address?: string;
     role: 'user' | 'admin';
     token: string;
   };
@@ -17,6 +19,8 @@ export interface UserResponse {
     _id: string;
     name: string;
     email: string;
+    phone?: string;
+    address?: string;
     role: 'user' | 'admin';
   };
 }
@@ -43,5 +47,13 @@ export const registerApi = async (
 // GET /api/auth/me
 export const getMeApi = async (): Promise<UserResponse> => {
   const res = await api.get<UserResponse>('/api/auth/me');
+  return res.data;
+};
+
+// PUT /api/users/profile
+export const updateProfileApi = async (
+  data: { name?: string; phone?: string; address?: string }
+): Promise<UserResponse> => {
+  const res = await api.put<UserResponse>('/api/users/profile', data);
   return res.data;
 };

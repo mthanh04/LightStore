@@ -139,7 +139,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#DFDFDF] shrink-0">
-          <h3 className="text-[18px] font-bold text-[#111111]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+          <h3 className="text-[18px] font-bold text-[#111111]" style={{ fontFamily: 'Roboto, sans-serif' }}>
             {initial ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
           </h3>
           <button onClick={onClose} className="text-[#767676] hover:text-[#111111] cursor-pointer p-1">
@@ -151,7 +151,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
         <div className="overflow-y-auto flex-1 px-6 py-4">
           {apiError && (
             <div className="mb-4 bg-[#FEE2E2] border border-[#FECACA] rounded-[4px] px-4 py-3 text-[13px] text-[#CC0008]"
-              style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+              style={{ fontFamily: 'Roboto, sans-serif' }}>
               {apiError}
             </div>
           )}
@@ -162,7 +162,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
           </label>
           <input id="p-name" className={inputCls(!!errors.name)} placeholder="Đèn chùm pha lê cao cấp"
             value={form.name} onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
-            style={{ fontFamily: 'Noto Sans, sans-serif' }} />
+            style={{ fontFamily: 'Roboto, sans-serif' }} />
           {errors.name && <p className="text-[12px] text-[#CC0008] mt-1">{errors.name}</p>}
 
           {/* Row 2: Price + Stock + Category */}
@@ -174,7 +174,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
               <input id="p-price" type="number" min="0" className={inputCls(!!errors.price)}
                 placeholder="850000" value={form.price}
                 onChange={(e) => setForm(f => ({ ...f, price: e.target.value }))}
-                style={{ fontFamily: 'Noto Sans, sans-serif' }} />
+                style={{ fontFamily: 'Roboto, sans-serif' }} />
               {errors.price && <p className="text-[12px] text-[#CC0008] mt-1">{errors.price}</p>}
             </div>
             <div>
@@ -182,7 +182,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
               <input id="p-stock" type="number" min="0" className={inputCls()}
                 placeholder="0" value={form.stock}
                 onChange={(e) => setForm(f => ({ ...f, stock: e.target.value }))}
-                style={{ fontFamily: 'Noto Sans, sans-serif' }} />
+                style={{ fontFamily: 'Roboto, sans-serif' }} />
             </div>
             <div>
               <label className={labelCls} htmlFor="p-cat">
@@ -192,7 +192,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
                 className={`${inputCls(!!errors.category)} bg-white cursor-pointer`}
                 value={form.category}
                 onChange={(e) => setForm(f => ({ ...f, category: e.target.value }))}
-                style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+                style={{ fontFamily: 'Roboto, sans-serif' }}>
                 <option value="">-- Chọn --</option>
                 {categories.map((c) => (
                   <option key={c._id} value={c._id}>{c.name}</option>
@@ -209,7 +209,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
             placeholder="Mô tả chi tiết sản phẩm..."
             value={form.description}
             onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))}
-            style={{ fontFamily: 'Noto Sans, sans-serif' }} />
+            style={{ fontFamily: 'Roboto, sans-serif' }} />
 
           {/* Existing images (edit mode) — có nút X để xóa từng ảnh */}
           {initial && initial.images.length > 0 && (
@@ -218,7 +218,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
                 <p className={labelCls} style={{ margin: 0 }}>
                   Ảnh hiện tại
                 </p>
-                <span className="text-[12px] text-[#767676]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+                <span className="text-[12px] text-[#767676]" style={{ fontFamily: 'Roboto, sans-serif' }}>
                   {keptImages.length}/{initial.images.length} ảnh được giữ
                 </span>
               </div>
@@ -252,7 +252,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
                           title="Khôi phục ảnh"
                           onClick={() => restoreExistingImage(url)}
                           className="absolute inset-0 flex items-center justify-center text-white text-[11px] font-bold cursor-pointer"
-                          style={{ fontFamily: 'Noto Sans, sans-serif' }}
+                          style={{ fontFamily: 'Roboto, sans-serif' }}
                         >
                           Khôi phục
                         </button>
@@ -262,7 +262,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
                 })}
               </div>
               {keptImages.length < initial.images.length && (
-                <p className="text-[12px] text-[#E87400] mt-1.5 flex items-center gap-1" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+                <p className="text-[12px] text-[#E87400] mt-1.5 flex items-center gap-1" style={{ fontFamily: 'Roboto, sans-serif' }}>
                   ⚠ {initial.images.length - keptImages.length} ảnh sẽ bị xóa khi lưu
                 </p>
               )}
@@ -283,7 +283,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
             }`}
           >
             <PhotoIcon className="w-8 h-8 text-[#767676] mx-auto mb-2" />
-            <p className="text-[14px] text-[#484848]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+            <p className="text-[14px] text-[#484848]" style={{ fontFamily: 'Roboto, sans-serif' }}>
               Kéo thả ảnh vào đây hoặc <span className="text-[#003399] font-semibold">chọn file</span>
             </p>
             <p className="text-[12px] text-[#767676] mt-1">PNG, JPG, WebP — tối đa 10 ảnh</p>
@@ -314,12 +314,12 @@ const ProductModal: React.FC<ProductModalProps> = ({ open, initial, onClose, onS
         <div className="flex justify-end gap-3 px-6 py-4 border-t border-[#DFDFDF] shrink-0">
           <button onClick={onClose} disabled={saving}
             className="h-[44px] px-5 border-2 border-[#003399] text-[#003399] rounded-[4px] text-[15px] font-bold hover:bg-[#003399] hover:text-white transition-all disabled:opacity-50 cursor-pointer"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+            style={{ fontFamily: 'Roboto, sans-serif' }}>
             Hủy
           </button>
           <button onClick={handleSave} disabled={saving}
             className="h-[44px] px-6 bg-[#003399] text-white rounded-[4px] text-[15px] font-bold hover:bg-[#002B80] transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+            style={{ fontFamily: 'Roboto, sans-serif' }}>
             {saving && <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>}
             {saving ? 'Đang lưu...' : initial ? 'Cập nhật' : 'Thêm sản phẩm'}
           </button>

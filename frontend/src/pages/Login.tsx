@@ -67,18 +67,18 @@ const Login: React.FC = () => {
             <LogoBulb size={42} interval={2500} duration={700} />
             <span
               className="text-2xl font-extrabold tracking-tight"
-              style={{ fontFamily: 'Poppins, sans-serif', color: '#171717' }}
+              style={{ fontFamily: 'Roboto, sans-serif', color: '#171717' }}
             >
               LightStore
             </span>
           </div>
           <h1
             className="text-3xl font-bold text-[#171717] mb-1"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             Chào mừng trở lại!
           </h1>
-          <p className="text-[#525252] text-[15px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+          <p className="text-[#525252] text-[15px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
             Đăng nhập để tiếp tục mua sắm
           </p>
         </div>
@@ -93,7 +93,7 @@ const Login: React.FC = () => {
               <svg className="w-4 h-4 text-[#EF4444] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
-              <p className="text-[#991B1B] text-[13px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+              <p className="text-[#991B1B] text-[13px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
                 {error}
               </p>
             </div>
@@ -128,7 +128,7 @@ const Login: React.FC = () => {
               <a
                 href="#"
                 className="text-[13px] text-[#D946EF] hover:underline"
-                style={{ fontFamily: 'Nunito, sans-serif' }}
+                style={{ fontFamily: 'Roboto, sans-serif' }}
               >
                 Quên mật khẩu?
               </a>
@@ -149,13 +149,13 @@ const Login: React.FC = () => {
           {/* Divider */}
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-[#E5E5E5]" />
-            <span className="text-[#A3A3A3] text-[13px]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+            <span className="text-[#A3A3A3] text-[13px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
               hoặc
             </span>
             <div className="flex-1 h-px bg-[#E5E5E5]" />
           </div>
 
-          <p className="text-center text-[14px] text-[#525252]" style={{ fontFamily: 'Nunito, sans-serif' }}>
+          <p className="text-center text-[14px] text-[#525252]" style={{ fontFamily: 'Roboto, sans-serif' }}>
             Chưa có tài khoản?{' '}
             <Link
               to="/register"

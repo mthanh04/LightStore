@@ -20,7 +20,7 @@ const Toast = ({ msg, type }: { msg: string; type: 'success' | 'error' }) => (
     className={`fixed top-5 right-5 z-[100] flex items-center gap-2 px-4 py-3 rounded-[4px] text-white text-[14px] shadow-lg transition-all duration-300 ${
       type === 'success' ? 'bg-[#0A8A00]' : 'bg-[#CC0008]'
     }`}
-    style={{ fontFamily: 'Noto Sans, sans-serif' }}
+    style={{ fontFamily: 'Roboto, sans-serif' }}
   >
     {type === 'success' ? '✓' : '✕'} {msg}
   </div>
@@ -91,7 +91,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ open, initial, onClose, o
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#DFDFDF]">
           <h3
             className="text-[18px] font-bold text-[#111111]"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             {initial ? 'Sửa danh mục' : 'Thêm danh mục'}
           </h3>
@@ -108,7 +108,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ open, initial, onClose, o
           <label
             htmlFor="cat-name"
             className="block text-[13px] font-semibold text-[#111111] mb-1.5"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             Tên danh mục <span className="text-[#CC0008]">*</span>
           </label>
@@ -124,11 +124,11 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ open, initial, onClose, o
                 ? 'border-[#CC0008] focus:border-[#CC0008]'
                 : 'border-[#DFDFDF] focus:border-[#003399]'
             }`}
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
             autoFocus
           />
           {error && (
-            <p className="mt-1.5 text-[12px] text-[#CC0008]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+            <p className="mt-1.5 text-[12px] text-[#CC0008]" style={{ fontFamily: 'Roboto, sans-serif' }}>
               {error}
             </p>
           )}
@@ -140,7 +140,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ open, initial, onClose, o
             onClick={onClose}
             disabled={saving}
             className="h-[44px] px-5 border-2 border-[#003399] text-[#003399] rounded-[4px] text-[15px] font-bold hover:bg-[#003399] hover:text-white transition-all disabled:opacity-50 cursor-pointer"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             Hủy
           </button>
@@ -148,7 +148,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ open, initial, onClose, o
             onClick={handleSave}
             disabled={saving}
             className="h-[44px] px-6 bg-[#003399] text-white rounded-[4px] text-[15px] font-bold hover:bg-[#002B80] transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             {saving && (
               <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -183,11 +183,11 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ open, target, onClose, on
           <div className="w-10 h-10 rounded-full bg-[#FEE2E2] flex items-center justify-center shrink-0">
             <TrashIcon className="w-5 h-5 text-[#CC0008]" />
           </div>
-          <h3 className="text-[17px] font-bold text-[#111111]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+          <h3 className="text-[17px] font-bold text-[#111111]" style={{ fontFamily: 'Roboto, sans-serif' }}>
             Xóa danh mục
           </h3>
         </div>
-        <p className="text-[14px] text-[#484848] mb-5" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+        <p className="text-[14px] text-[#484848] mb-5" style={{ fontFamily: 'Roboto, sans-serif' }}>
           Bạn có chắc muốn xóa danh mục{' '}
           <span className="font-bold text-[#111111]">"{target.name}"</span>?{' '}
           Hành động này không thể hoàn tác.
@@ -197,7 +197,7 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ open, target, onClose, on
             onClick={onClose}
             disabled={deleting}
             className="h-[44px] px-5 border-2 border-[#DFDFDF] text-[#484848] rounded-[4px] text-[14px] font-bold hover:border-[#003399] hover:text-[#003399] transition-all disabled:opacity-50 cursor-pointer"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             Hủy
           </button>
@@ -205,7 +205,7 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ open, target, onClose, on
             onClick={onConfirm}
             disabled={deleting}
             className="h-[44px] px-6 bg-[#CC0008] text-white rounded-[4px] text-[14px] font-bold hover:bg-[#a80006] transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             {deleting && (
               <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -316,11 +316,11 @@ const Categories: React.FC = () => {
         <div>
           <h1
             className="text-[28px] font-bold text-[#111111] leading-tight"
-            style={{ fontFamily: 'Noto Sans, sans-serif' }}
+            style={{ fontFamily: 'Roboto, sans-serif' }}
           >
             Danh mục sản phẩm
           </h1>
-          <p className="text-[14px] text-[#767676] mt-0.5" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+          <p className="text-[14px] text-[#767676] mt-0.5" style={{ fontFamily: 'Roboto, sans-serif' }}>
             Quản lý các danh mục đèn trong hệ thống
           </p>
         </div>
@@ -328,7 +328,7 @@ const Categories: React.FC = () => {
           onClick={handleAdd}
           id="btn-add-category"
           className="flex items-center gap-2 h-[44px] px-5 bg-[#003399] text-white rounded-[4px] text-[15px] font-bold hover:bg-[#002B80] transition-all cursor-pointer"
-          style={{ fontFamily: 'Noto Sans, sans-serif' }}
+          style={{ fontFamily: 'Roboto, sans-serif' }}
         >
           <PlusIcon className="w-4 h-4" />
           Thêm danh mục
@@ -347,10 +347,10 @@ const Categories: React.FC = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full h-[40px] pl-9 pr-3 border border-[#DFDFDF] rounded-[4px] text-[14px] text-[#111111] placeholder:text-[#767676] outline-none focus:border-[#003399] transition-colors"
-              style={{ fontFamily: 'Noto Sans, sans-serif' }}
+              style={{ fontFamily: 'Roboto, sans-serif' }}
             />
           </div>
-          <span className="text-[13px] text-[#767676] ml-auto" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+          <span className="text-[13px] text-[#767676] ml-auto" style={{ fontFamily: 'Roboto, sans-serif' }}>
             {loading ? '—' : `${filtered.length} danh mục`}
           </span>
         </div>
@@ -364,7 +364,7 @@ const Categories: React.FC = () => {
                   <th
                     key={h}
                     className="px-4 py-3 text-[12px] font-bold text-[#484848] uppercase tracking-wide"
-                    style={{ fontFamily: 'Noto Sans, sans-serif' }}
+                    style={{ fontFamily: 'Roboto, sans-serif' }}
                   >
                     {h}
                   </th>
@@ -379,14 +379,14 @@ const Categories: React.FC = () => {
                   <td colSpan={5} className="text-center py-16">
                     <div className="flex flex-col items-center gap-3 text-[#767676]">
                       <TagIcon className="w-10 h-10 opacity-30" />
-                      <p className="text-[14px]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+                      <p className="text-[14px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
                         {search ? 'Không tìm thấy danh mục phù hợp' : 'Chưa có danh mục nào'}
                       </p>
                       {!search && (
                         <button
                           onClick={handleAdd}
                           className="text-[#003399] font-semibold text-[13px] hover:underline cursor-pointer"
-                          style={{ fontFamily: 'Noto Sans, sans-serif' }}
+                          style={{ fontFamily: 'Roboto, sans-serif' }}
                         >
                           + Thêm danh mục đầu tiên
                         </button>
@@ -410,7 +410,7 @@ const Categories: React.FC = () => {
                         </div>
                         <span
                           className="text-[15px] font-bold text-[#111111]"
-                          style={{ fontFamily: 'Noto Sans, sans-serif' }}
+                          style={{ fontFamily: 'Roboto, sans-serif' }}
                         >
                           {cat.name}
                         </span>
@@ -424,7 +424,7 @@ const Categories: React.FC = () => {
                         {cat.slug}
                       </code>
                     </td>
-                    <td className="px-4 py-3 text-[13px] text-[#767676]" style={{ fontFamily: 'Noto Sans, sans-serif' }}>
+                    <td className="px-4 py-3 text-[13px] text-[#767676]" style={{ fontFamily: 'Roboto, sans-serif' }}>
                       {cat.createdAt
                         ? new Date(cat.createdAt).toLocaleDateString('vi-VN')
                         : '—'}
