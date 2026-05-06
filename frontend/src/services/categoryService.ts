@@ -4,6 +4,8 @@ export interface Category {
   _id: string;
   name: string;
   slug: string;
+  image?: string;
+  imagePublicId?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -25,15 +27,19 @@ export const getCategories = async (): Promise<Category[]> => {
   return res.data.data;
 };
 
-// POST /api/categories (Admin)
-export const createCategory = async (name: string): Promise<Category> => {
-  const res = await api.post<CategoryResponse>('/api/categories', { name });
+// POST /api/categories (Admin) — multipart/form-data
+export const createCategory = async (formData: FormData): Promise<Category> => {
+  const res = await api.post<CategoryResponse>('/api/categories', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return res.data.data;
 };
 
-// PUT /api/categories/:id (Admin)
-export const updateCategory = async (id: string, name: string): Promise<Category> => {
-  const res = await api.put<CategoryResponse>(`/api/categories/${id}`, { name });
+// PUT /api/categories/:id (Admin) — multipart/form-data
+export const updateCategory = async (id: string, formData: FormData): Promise<Category> => {
+  const res = await api.put<CategoryResponse>(`/api/categories/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return res.data.data;
 };
 

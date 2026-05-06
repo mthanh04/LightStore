@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBagIcon, StarIcon } from '@heroicons/react/24/solid';
 import { ShoppingBagIcon as ShoppingBagOutline } from '@heroicons/react/24/outline';
 import type { Product } from '../../services/productService';
 import { useCartStore } from '../../store/cartStore';
+import { useAuthStore } from '../../store/authStore';
 import { useToast } from '../common/Toast';
 
 interface ProductCardProps {
@@ -15,7 +16,9 @@ const fmt = (n: number) =>
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addItem } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
   const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const image = product.images?.[0] ?? '';
   const isOutOfStock = product.stock === 0;
@@ -27,6 +30,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isOutOfStock) return;
+
+    if (!isAuthenticated) {
+      showToast('Vui lòng đăng nhập để thêm vào giỏ hàng', 'error');
+      navigate('/login');
+      return;
+    }
+
     addItem({
       _id: product._id,
       name: product.name,

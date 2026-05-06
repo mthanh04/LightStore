@@ -172,3 +172,17 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* Infinite marquee for category slider */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover .animate-marquee {
+  animation-play-state: paused;
+}

@@ -1,10 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   PlusIcon,
   PencilSquareIcon,
   TrashIcon,
   MagnifyingGlassIcon,
   TagIcon,
+  PhotoIcon,
+  XMarkIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from '@heroicons/react/24/outline';
 import {
   getCategories,
@@ -30,9 +34,9 @@ const LoadingRow = () => (
   <>
     {[1, 2, 3, 4].map((i) => (
       <tr key={i} className="border-b border-[#DFDFDF]">
-        {[1, 2, 3, 4].map((j) => (
+        {[1, 2, 3, 4, 5].map((j) => (
           <td key={j} className="px-4 py-3">
-            <div className="h-4 bg-[#DFDFDF] rounded animate-pulse" style={{ width: `${60 + j * 10}%` }} />
+            <div className="h-4 bg-[#DFDFDF] rounded animate-pulse" style={{ width: `${50 + j * 10}%` }} />
           </td>
         ))}
       </tr>
@@ -40,7 +44,7 @@ const LoadingRow = () => (
   </>
 );
 
-// ── Modal Form ──────────────────────────────────────────────────
+// ── Category Modal ──────────────────────────────────────────────
 interface CategoryModalProps {
   open: boolean;
   initial?: Category | null;
@@ -49,24 +53,53 @@ interface CategoryModalProps {
 }
 
 const CategoryModal: React.FC<CategoryModalProps> = ({ open, initial, onClose, onSaved }) => {
-  const [name, setName] = useState('');
-  const [error, setError] = useState('');
-  const [saving, setSaving] = useState(false);
+  const [name, setName]           = useState('');
+  const [error, setError]         = useState('');
+  const [saving, setSaving]       = useState(false);
+  const [file, setFile]           = useState<File | null>(null);
+  const [preview, setPreview]     = useState('');
+  const [removeImage, setRemoveImage] = useState(false);
+  const [dragOver, setDragOver]   = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    if (!open) return;
     setName(initial?.name ?? '');
     setError('');
+    setFile(null);
+    setPreview('');
+    setRemoveImage(false);
   }, [initial, open]);
 
   if (!open) return null;
+
+  const handleFile = (f: File) => {
+    if (!f.type.startsWith('image/')) return;
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
+    setRemoveImage(false);
+  };
+
+  const handleClearImage = () => {
+    setFile(null);
+    setPreview('');
+    if (initial?.image) setRemoveImage(true);
+  };
+
+  const currentImageSrc = preview || (removeImage ? '' : initial?.image ?? '');
 
   const handleSave = async () => {
     if (!name.trim()) { setError('Tên danh mục không được để trống'); return; }
     setSaving(true);
     try {
+      const fd = new FormData();
+      fd.append('name', name.trim());
+      if (file) fd.append('image', file);
+      if (removeImage) fd.append('removeImage', 'true');
+
       const saved = initial
-        ? await updateCategory(initial._id, name.trim())
-        : await createCategory(name.trim());
+        ? await updateCategory(initial._id, fd)
+        : await createCategory(fd);
       onSaved(saved);
       onClose();
     } catch (err: unknown) {
@@ -79,59 +112,101 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ open, initial, onClose, o
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Overlay */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
-      {/* Dialog */}
       <div
         className="relative bg-white rounded-[8px] w-full max-w-md shadow-xl"
         style={{ boxShadow: '0 8px 24px rgba(17,17,17,0.12)' }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#DFDFDF]">
-          <h3
-            className="text-[18px] font-bold text-[#111111]"
-            style={{ fontFamily: 'Roboto, sans-serif' }}
-          >
+          <h3 className="text-[18px] font-bold text-[#111111]" style={{ fontFamily: 'Roboto, sans-serif' }}>
             {initial ? 'Sửa danh mục' : 'Thêm danh mục'}
           </h3>
-          <button
-            onClick={onClose}
-            className="text-[#767676] hover:text-[#111111] transition-colors text-[20px] leading-none cursor-pointer"
-          >
-            ×
+          <button onClick={onClose} className="text-[#767676] hover:text-[#111111] transition-colors cursor-pointer p-1">
+            <XMarkIcon className="w-5 h-5" />
           </button>
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5">
-          <label
-            htmlFor="cat-name"
-            className="block text-[13px] font-semibold text-[#111111] mb-1.5"
-            style={{ fontFamily: 'Roboto, sans-serif' }}
-          >
-            Tên danh mục <span className="text-[#CC0008]">*</span>
-          </label>
-          <input
-            id="cat-name"
-            type="text"
-            value={name}
-            onChange={(e) => { setName(e.target.value); setError(''); }}
-            onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-            placeholder="Ví dụ: Đèn chùm"
-            className={`w-full h-[44px] px-[14px] border rounded-[4px] text-[16px] text-[#111111] placeholder:text-[#767676] outline-none transition-all ${
-              error
-                ? 'border-[#CC0008] focus:border-[#CC0008]'
-                : 'border-[#DFDFDF] focus:border-[#003399]'
-            }`}
-            style={{ fontFamily: 'Roboto, sans-serif' }}
-            autoFocus
-          />
-          {error && (
-            <p className="mt-1.5 text-[12px] text-[#CC0008]" style={{ fontFamily: 'Roboto, sans-serif' }}>
-              {error}
-            </p>
-          )}
+        <div className="px-6 py-5 space-y-4">
+          {/* Name */}
+          <div>
+            <label htmlFor="cat-name" className="block text-[13px] font-semibold text-[#111111] mb-1.5" style={{ fontFamily: 'Roboto, sans-serif' }}>
+              Tên danh mục <span className="text-[#CC0008]">*</span>
+            </label>
+            <input
+              id="cat-name"
+              type="text"
+              value={name}
+              onChange={(e) => { setName(e.target.value); setError(''); }}
+              onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+              placeholder="Ví dụ: Đèn chùm"
+              className={`w-full h-[44px] px-[14px] border rounded-[4px] text-[16px] text-[#111111] placeholder:text-[#767676] outline-none transition-all ${
+                error ? 'border-[#CC0008]' : 'border-[#DFDFDF] focus:border-[#003399]'
+              }`}
+              style={{ fontFamily: 'Roboto, sans-serif' }}
+              autoFocus
+            />
+            {error && <p className="mt-1.5 text-[12px] text-[#CC0008]" style={{ fontFamily: 'Roboto, sans-serif' }}>{error}</p>}
+          </div>
+
+          {/* Image upload */}
+          <div>
+            <label className="block text-[13px] font-semibold text-[#111111] mb-1.5" style={{ fontFamily: 'Roboto, sans-serif' }}>
+              Ảnh danh mục
+            </label>
+
+            {currentImageSrc ? (
+              /* Preview ảnh đã chọn / ảnh hiện tại */
+              <div className="relative w-full h-[180px] rounded-[6px] overflow-hidden border border-[#DFDFDF] group">
+                <img src={currentImageSrc} alt="" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-[#003399] text-[13px] font-bold px-3 py-1.5 rounded-[4px] cursor-pointer"
+                    style={{ fontFamily: 'Roboto, sans-serif' }}
+                  >
+                    Đổi ảnh
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleClearImage}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity bg-[#CC0008] text-white text-[13px] font-bold px-3 py-1.5 rounded-[4px] cursor-pointer"
+                    style={{ fontFamily: 'Roboto, sans-serif' }}
+                  >
+                    Xóa ảnh
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Drop zone */
+              <div
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
+                onClick={() => fileRef.current?.click()}
+                className={`border-2 border-dashed rounded-[6px] p-6 text-center cursor-pointer transition-all ${
+                  dragOver ? 'border-[#003399] bg-[#003399]/5' : 'border-[#DFDFDF] hover:border-[#003399] hover:bg-[#F5F5F5]'
+                }`}
+              >
+                <PhotoIcon className="w-8 h-8 text-[#767676] mx-auto mb-2" />
+                <p className="text-[14px] text-[#484848]" style={{ fontFamily: 'Roboto, sans-serif' }}>
+                  Kéo thả ảnh vào đây hoặc <span className="text-[#003399] font-semibold">chọn file</span>
+                </p>
+                <p className="text-[12px] text-[#767676] mt-1">PNG, JPG, WebP — tối đa 5MB</p>
+              </div>
+            )}
+
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ''; }}
+            />
+          </div>
         </div>
 
         {/* Footer */}
@@ -221,11 +296,14 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ open, target, onClose, on
   );
 };
 
+const PAGE_SIZE = 5;
+
 // ── Main Page ───────────────────────────────────────────────────
 const Categories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading]       = useState(true);
   const [search, setSearch]         = useState('');
+  const [page, setPage]             = useState(1);
 
   const [modalOpen, setModalOpen]   = useState(false);
   const [editing, setEditing]       = useState<Category | null>(null);
@@ -258,6 +336,12 @@ const Categories: React.FC = () => {
   const filtered = categories.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  // Reset về trang 1 khi search thay đổi
+  const applySearch = (v: string) => { setSearch(v); setPage(1); };
 
   const handleAdd = () => { setEditing(null); setModalOpen(true); };
   const handleEdit = (cat: Category) => { setEditing(cat); setModalOpen(true); };
@@ -293,10 +377,8 @@ const Categories: React.FC = () => {
 
   return (
     <div className="p-6 lg:p-8">
-      {/* Toast */}
       {toast && <Toast msg={toast.msg} type={toast.type} />}
 
-      {/* Modals */}
       <CategoryModal
         open={modalOpen}
         initial={editing}
@@ -314,10 +396,7 @@ const Categories: React.FC = () => {
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1
-            className="text-[28px] font-bold text-[#111111] leading-tight"
-            style={{ fontFamily: 'Roboto, sans-serif' }}
-          >
+          <h1 className="text-[28px] font-bold text-[#111111] leading-tight" style={{ fontFamily: 'Roboto, sans-serif' }}>
             Danh mục sản phẩm
           </h1>
           <p className="text-[14px] text-[#767676] mt-0.5" style={{ fontFamily: 'Roboto, sans-serif' }}>
@@ -345,7 +424,7 @@ const Categories: React.FC = () => {
               type="text"
               placeholder="Tìm danh mục..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => applySearch(e.target.value)}
               className="w-full h-[40px] pl-9 pr-3 border border-[#DFDFDF] rounded-[4px] text-[14px] text-[#111111] placeholder:text-[#767676] outline-none focus:border-[#003399] transition-colors"
               style={{ fontFamily: 'Roboto, sans-serif' }}
             />
@@ -360,10 +439,10 @@ const Categories: React.FC = () => {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-[#F5F5F5] border-b border-[#DFDFDF]">
-                {['#', 'Tên danh mục', 'Slug', 'Ngày tạo', 'Thao tác'].map((h) => (
+                {['#', 'Ảnh', 'Tên danh mục', 'Slug', 'Ngày tạo', 'Thao tác'].map((h) => (
                   <th
                     key={h}
-                    className="px-4 py-3 text-[12px] font-bold text-[#484848] uppercase tracking-wide"
+                    className="px-4 py-3 text-[12px] font-bold text-[#484848] uppercase tracking-wide whitespace-nowrap"
                     style={{ fontFamily: 'Roboto, sans-serif' }}
                   >
                     {h}
@@ -376,7 +455,7 @@ const Categories: React.FC = () => {
                 <LoadingRow />
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-16">
+                  <td colSpan={6} className="text-center py-16">
                     <div className="flex flex-col items-center gap-3 text-[#767676]">
                       <TagIcon className="w-10 h-10 opacity-30" />
                       <p className="text-[14px]" style={{ fontFamily: 'Roboto, sans-serif' }}>
@@ -395,27 +474,30 @@ const Categories: React.FC = () => {
                   </td>
                 </tr>
               ) : (
-                filtered.map((cat, idx) => (
-                  <tr
-                    key={cat._id}
-                    className="border-b border-[#DFDFDF] hover:bg-[#F5F5F5] transition-colors"
-                  >
-                    <td className="px-4 py-3 text-[13px] text-[#767676] w-10">
-                      {idx + 1}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-[4px] bg-[#003399]/10 flex items-center justify-center shrink-0">
-                          <TagIcon className="w-4 h-4 text-[#003399]" />
-                        </div>
-                        <span
-                          className="text-[15px] font-bold text-[#111111]"
-                          style={{ fontFamily: 'Roboto, sans-serif' }}
-                        >
-                          {cat.name}
-                        </span>
+                paged.map((cat, idx) => (
+                  <tr key={cat._id} className="border-b border-[#DFDFDF] hover:bg-[#F5F5F5] transition-colors">
+                    {/* # */}
+                    <td className="px-4 py-3 text-[13px] text-[#767676] w-10">{(page - 1) * PAGE_SIZE + idx + 1}</td>
+
+                    {/* Ảnh */}
+                    <td className="px-4 py-3 w-16">
+                      <div className="w-12 h-12 rounded-[4px] border border-[#DFDFDF] overflow-hidden bg-[#F5F5F5] flex items-center justify-center shrink-0">
+                        {cat.image ? (
+                          <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <TagIcon className="w-5 h-5 text-[#DFDFDF]" />
+                        )}
                       </div>
                     </td>
+
+                    {/* Tên */}
+                    <td className="px-4 py-3">
+                      <span className="text-[15px] font-bold text-[#111111]" style={{ fontFamily: 'Roboto, sans-serif' }}>
+                        {cat.name}
+                      </span>
+                    </td>
+
+                    {/* Slug */}
                     <td className="px-4 py-3">
                       <code
                         className="text-[13px] text-[#484848] bg-[#F5F5F5] px-2 py-0.5 rounded-[4px]"
@@ -424,11 +506,13 @@ const Categories: React.FC = () => {
                         {cat.slug}
                       </code>
                     </td>
-                    <td className="px-4 py-3 text-[13px] text-[#767676]" style={{ fontFamily: 'Roboto, sans-serif' }}>
-                      {cat.createdAt
-                        ? new Date(cat.createdAt).toLocaleDateString('vi-VN')
-                        : '—'}
+
+                    {/* Ngày tạo */}
+                    <td className="px-4 py-3 text-[13px] text-[#767676] whitespace-nowrap" style={{ fontFamily: 'Roboto, sans-serif' }}>
+                      {cat.createdAt ? new Date(cat.createdAt).toLocaleDateString('vi-VN') : '—'}
                     </td>
+
+                    {/* Thao tác */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <button
@@ -453,6 +537,58 @@ const Categories: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-5 py-4 border-t border-[#DFDFDF]">
+            <p className="text-[13px] text-[#767676]" style={{ fontFamily: 'Roboto, sans-serif' }}>
+              Trang {page} / {totalPages} ({filtered.length} danh mục)
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="w-8 h-8 flex items-center justify-center rounded-[4px] border border-[#DFDFDF] text-[#484848] hover:border-[#003399] hover:text-[#003399] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+              >
+                <ChevronLeftIcon className="w-4 h-4" />
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((n) => n === 1 || n === totalPages || Math.abs(n - page) <= 1)
+                .reduce<(number | '...')[]>((acc, n, i, arr) => {
+                  if (i > 0 && n - (arr[i - 1] as number) > 1) acc.push('...');
+                  acc.push(n);
+                  return acc;
+                }, [])
+                .map((n, i) =>
+                  n === '...' ? (
+                    <span key={`e${i}`} className="w-8 h-8 flex items-center justify-center text-[#767676] text-[13px]">…</span>
+                  ) : (
+                    <button
+                      key={n}
+                      onClick={() => setPage(n as number)}
+                      className={`w-8 h-8 flex items-center justify-center rounded-[4px] text-[13px] font-bold transition-all cursor-pointer ${
+                        n === page
+                          ? 'bg-[#003399] text-white'
+                          : 'border border-[#DFDFDF] text-[#484848] hover:border-[#003399] hover:text-[#003399]'
+                      }`}
+                      style={{ fontFamily: 'Roboto, sans-serif' }}
+                    >
+                      {n}
+                    </button>
+                  )
+                )}
+
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="w-8 h-8 flex items-center justify-center rounded-[4px] border border-[#DFDFDF] text-[#484848] hover:border-[#003399] hover:text-[#003399] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
