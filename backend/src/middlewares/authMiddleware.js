@@ -44,4 +44,29 @@ const admin = (req, res, next) => {
     }
 };
 
-module.exports = { protect, admin };
+/**
+ * Middleware tùy chọn - Kiểm tra token nếu có
+ * Dùng cho các route cho phép cả khách vãng lai và user đăng nhập
+ */
+const optionalProtect = catchAsync(async (req, res, next) => {
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const currentUser = await User.findById(decoded.id);
+            if (currentUser) {
+                req.user = currentUser;
+            }
+        } catch (error) {
+            // Token không hợp lệ thì bỏ qua (coi như khách vãng lai)
+        }
+    }
+    
+    next();
+});
+
+module.exports = { protect, admin, optionalProtect };

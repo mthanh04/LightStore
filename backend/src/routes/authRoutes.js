@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser, getMe, googleLogin } = require('../controllers/authController');
+const { registerUser, loginUser, getMe } = require('../controllers/authController');
 const { protect } = require('../middlewares/authMiddleware');
 
 /**
@@ -93,33 +93,5 @@ router.post('/login', loginUser);
  *         description: Chưa đăng nhập hoặc token không hợp lệ
  */
 router.get('/me', protect, getMe);
-
-/**
- * @swagger
- * /api/auth/google:
- *   post:
- *     summary: Đăng nhập bằng tài khoản Google
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - tokenId
- *             properties:
- *               tokenId:
- *                 type: string
- *                 description: Token ID nhận được từ Google sau khi đăng nhập trên client
- *     responses:
- *       200:
- *         description: Đăng nhập thành công, trả về token + role
- *       400:
- *         description: Thiếu Token ID
- *       401:
- *         description: Xác thực Google thất bại
- */
-router.post('/google', googleLogin);
 
 module.exports = router;

@@ -48,3 +48,8 @@ export const updateOrderStatus = async (
 export const deleteOrder = async (id: string): Promise<void> => {
   await api.delete(`/api/orders/${id}`);
 };
+
+export const cancelOrder = async (id: string): Promise<Order> => {
+  const res = await api.put(`/api/orders/${id}/cancel`);
+  return res.data.data;
+};

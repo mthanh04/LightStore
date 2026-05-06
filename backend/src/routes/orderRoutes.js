@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { createOrder, getAllOrders, getMyOrders, updateOrderStatus, getOrderById, cancelOrder, deleteOrder } = require('../controllers/orderController');
-const { protect, admin } = require('../middlewares/authMiddleware');
+const { protect, admin, optionalProtect } = require('../middlewares/authMiddleware');
 
 /**
  * @swagger
@@ -57,15 +57,8 @@ const { protect, admin } = require('../middlewares/authMiddleware');
  *         description: Dữ liệu không hợp lệ hoặc hết hàng
  */
 // Cho phép cả khách vãng lai (không bắt buộc token)
-// Dùng middleware "optionalProtect" - tự xử lý trong controller nếu user là null
-router.post('/', (req, res, next) => {
-    // Thử xác thực token nếu có, nhưng không bắt lỗi nếu không có
-    const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        return protect(req, res, next);
-    }
-    next(); // Bỏ qua xác thực nếu không có token → khách vãng lai
-}, createOrder);
+// Dùng middleware "optionalProtect" để tự gắn req.user nếu có token
+router.post('/', optionalProtect, createOrder);
 
 /**
  * @swagger

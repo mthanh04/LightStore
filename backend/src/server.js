@@ -33,7 +33,7 @@ app.use(helmet({
 // Rate Limiting: giới hạn 100 request / 15 phút / IP (chống brute-force, spam)
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 phút
-    max: 100,
+    max: process.env.NODE_ENV === 'development' ? 500 : 100,
     message: {
         status: 'fail',
         message: 'Quá nhiều request từ IP này. Vui lòng thử lại sau 15 phút.',

@@ -58,7 +58,7 @@ export interface RevealProps {
   /** Threshold 0–1 — fraction of element visible before trigger */
   amount?: number | 'some' | 'all';
   /** Render as a specific HTML element — default 'div' */
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
