@@ -8,6 +8,7 @@ import AdminLayout from './layouts/AdminLayout';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Cart from './pages/Cart';
+import ProductDetail from './pages/ProductDetail';
 
 // Protected User Pages
 import Checkout from './pages/Checkout';
@@ -37,6 +38,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
         
         {/* Protected (User or Admin can access) */}
         <Route element={<ProtectedRoute />}>

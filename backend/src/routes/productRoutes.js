@@ -119,14 +119,41 @@ router.get('/:id/related', getRelatedProducts);
  *             properties:
  *               name:
  *                 type: string
+ *                 example: Đèn chùm pha lê Baccarat
  *               price:
  *                 type: number
+ *                 example: 4500000
  *               description:
  *                 type: string
+ *                 example: Đèn chùm cao cấp, phù hợp phòng khách rộng
  *               category:
  *                 type: string
+ *                 example: 665f1a2b3c4d5e6f7a8b9c0d
  *               stock:
  *                 type: integer
+ *                 example: 10
+ *               brand:
+ *                 type: string
+ *                 example: Philips
+ *               specifications:
+ *                 type: string
+ *                 description: JSON string — mảng [{key, value}] chứa thông số kỹ thuật
+ *                 example: '[{"key":"Công suất","value":"18W"},{"key":"Điện áp","value":"220V"}]'
+ *               warranty:
+ *                 type: string
+ *                 example: 12 tháng
+ *               usage:
+ *                 type: string
+ *                 example: Lắp đặt trần nhà, cần thợ điện chuyên nghiệp
+ *               importantInfo:
+ *                 type: string
+ *                 example: Không dùng ngoài trời
+ *               weight:
+ *                 type: string
+ *                 example: 2.5 kg
+ *               dimensions:
+ *                 type: string
+ *                 example: 60x60x40 cm
  *               images:
  *                 type: array
  *                 items:
@@ -166,8 +193,34 @@ router.post('/', protect, admin, upload.array('images', 10), createProduct);
  *                 type: string
  *               price:
  *                 type: number
+ *               description:
+ *                 type: string
  *               stock:
  *                 type: integer
+ *               brand:
+ *                 type: string
+ *                 example: Rạng Đông
+ *               specifications:
+ *                 type: string
+ *                 description: JSON string — mảng [{key, value}] chứa thông số kỹ thuật
+ *                 example: '[{"key":"Công suất","value":"24W"},{"key":"Màu ánh sáng","value":"Vàng 3000K"}]'
+ *               warranty:
+ *                 type: string
+ *                 example: 24 tháng
+ *               usage:
+ *                 type: string
+ *               importantInfo:
+ *                 type: string
+ *               weight:
+ *                 type: string
+ *                 example: 1.2 kg
+ *               dimensions:
+ *                 type: string
+ *                 example: 45x30x20 cm
+ *               existingImages:
+ *                 type: string
+ *                 description: JSON string — mảng URL ảnh cũ muốn giữ lại
+ *                 example: '["https://res.cloudinary.com/..."]'
  *               images:
  *                 type: array
  *                 items:

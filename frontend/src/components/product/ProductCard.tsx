@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ShoppingBagIcon, StarIcon } from '@heroicons/react/24/solid';
 import { ShoppingBagIcon as ShoppingBagOutline } from '@heroicons/react/24/outline';
 import type { Product } from '../../services/productService';
@@ -19,7 +20,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const image = product.images?.[0] ?? '';
   const isOutOfStock = product.stock === 0;
   const category =
-    typeof product.category === 'object' ? product.category.name : '';
+    product.category !== null && typeof product.category === 'object'
+      ? product.category.name
+      : '';
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -35,7 +38,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div className="group relative bg-white rounded-[16px] border border-[#E5E5E5] overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-product-hover hover:border-[#D4D4D4] flex flex-col">
+    <Link
+      to={`/product/${product._id}`}
+      className="group relative bg-white rounded-[16px] border border-[#E5E5E5] overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-product-hover hover:border-[#D4D4D4] flex flex-col"
+    >
       {/* Image */}
       <div className="relative overflow-hidden bg-[#F5F5F5] aspect-square">
         {image ? (
@@ -136,7 +142,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </p>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
