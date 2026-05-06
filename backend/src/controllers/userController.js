@@ -81,4 +81,41 @@ const updateProfile = catchAsync(async (req, res, next) => {
     });
 });
 
-module.exports = { toggleWishlist, getWishlist, updateProfile };
+// @desc    Thay đổi mật khẩu
+// @route   PUT /api/users/change-password
+const changePassword = catchAsync(async (req, res, next) => {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+        return next(new AppError('Vui lòng nhập mật khẩu hiện tại và mật khẩu mới', 400));
+    }
+
+    if (newPassword.length < 6) {
+        return next(new AppError('Mật khẩu mới phải có ít nhất 6 ký tự', 400));
+    }
+
+    const user = await User.findById(req.user._id).select('+password');
+    if (!user) {
+        return next(new AppError('Không tìm thấy người dùng', 404));
+    }
+
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+        return next(new AppError('Mật khẩu hiện tại không đúng', 400));
+    }
+
+    user.password = newPassword;
+    await user.save(); // pre-save hook sẽ hash password mới
+
+    const generateToken = require('../utils/generateToken');
+
+    res.json({
+        status: 'success',
+        message: 'Thay đổi mật khẩu thành công',
+        data: {
+            token: generateToken(user._id)
+        }
+    });
+});
+
+module.exports = { toggleWishlist, getWishlist, updateProfile, changePassword };

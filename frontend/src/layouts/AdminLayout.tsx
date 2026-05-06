@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   Squares2X2Icon,
   CubeIcon,
@@ -82,14 +82,7 @@ const AdminLayout: React.FC = () => {
             <p className="text-white/50 text-[11px] truncate">{user?.email}</p>
           </div>
         </div>
-        <Link
-          to="/"
-          className="flex items-center gap-2 px-3 py-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[4px] text-[13px] transition-colors"
-          style={{ fontFamily: 'Roboto, sans-serif' }}
-        >
-          <Squares2X2Icon className="w-4 h-4" />
-          Xem trang chủ
-        </Link>
+
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-2 px-3 py-2 text-white/60 hover:text-red-300 hover:bg-white/10 rounded-[4px] text-[13px] transition-colors cursor-pointer"

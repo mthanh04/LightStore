@@ -100,11 +100,11 @@ const Checkout: React.FC = () => {
             Xem đơn hàng của tôi
           </Link>
           <Link
-            to="/shop"
+            to="/"
             className="h-[50px] px-8 border-2 border-[#D946EF] text-[#D946EF] rounded-full font-[700] hover:bg-[#FDF4FF] transition-all flex items-center"
             style={{ fontFamily: 'Roboto, sans-serif' }}
           >
-            Tiếp tục mua sắm
+            Về trang chủ
           </Link>
         </div>
       </div>

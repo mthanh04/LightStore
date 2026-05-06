@@ -116,6 +116,15 @@ const getDashboardStats = catchAsync(async (req, res, next) => {
     // 4. Số lượng sản phẩm
     const totalProducts = await Product.countDocuments();
 
+    // Phân loại đơn hàng theo trạng thái
+    const ordersByStatus = {
+        Pending: orders.filter(o => o.status === 'Pending').length,
+        Processing: orders.filter(o => o.status === 'Processing').length,
+        Shipped: orders.filter(o => o.status === 'Shipped').length,
+        Delivered: orders.filter(o => o.status === 'Delivered').length,
+        Cancelled: orders.filter(o => o.status === 'Cancelled').length,
+    };
+
     res.json({
         status: 'success',
         data: {
@@ -123,7 +132,8 @@ const getDashboardStats = catchAsync(async (req, res, next) => {
             totalOrders,
             totalUsers,
             totalProducts,
-            lowStockProducts
+            lowStockProducts,
+            ordersByStatus
         }
     });
 });

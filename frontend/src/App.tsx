@@ -28,8 +28,20 @@ import Users from './pages/Admin/Users';
 
 // Auth Guard
 import ProtectedRoute from './components/ProtectedRoute';
+import { useEffect } from 'react';
+import { useAuthStore } from './store/authStore';
+import { useCartStore } from './store/cartStore';
 
 function App() {
+  const fetchUser = useAuthStore((state) => state.fetchUser);
+  const fetchCart = useCartStore((state) => state.fetchCart);
+
+  useEffect(() => {
+    fetchUser().then(() => {
+      fetchCart();
+    });
+  }, [fetchUser, fetchCart]);
+
   return (
     <Routes>
       {/* ── User routes (wrapped in MainLayout) ─────────── */}

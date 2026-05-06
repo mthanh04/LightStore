@@ -1,12 +1,19 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import MobileBottomNav from '../components/layout/MobileBottomNav';
 import CartDrawer from '../components/common/CartDrawer';
 import ChatWidget from '../components/chat/ChatWidget';
+import { useAuthStore } from '../store/authStore';
 
 const MainLayout: React.FC = () => {
+  const { user } = useAuthStore();
+
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFAFA]">
       {/* Sticky top navbar */}

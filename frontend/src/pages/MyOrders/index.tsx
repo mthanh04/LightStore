@@ -6,7 +6,8 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/24/outline';
 import { getMyOrders } from '../../services/checkoutService';
-import type { Order } from '../../services/orderService';
+import { cancelOrder, type Order } from '../../services/orderService';
+import OrderDetailModal from './OrderDetailModal';
 
 const fmt = (n: number) =>
   n.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
@@ -53,13 +54,16 @@ const MyOrders: React.FC = () => {
   });
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const res = await getMyOrders(page, 10);
       setOrders(res.data);
-      setPagination(res.pagination);
+      setPagination(res.pagination || {
+        currentPage: 1, totalPages: 1, totalItems: res.data.length, limit: 10
+      });
     } catch {
       setOrders([]);
     } finally {
@@ -68,6 +72,17 @@ const MyOrders: React.FC = () => {
   }, [page]);
 
   useEffect(() => { load(); }, [load]);
+
+  const handleCancelOrder = async (id: string) => {
+    try {
+      const updatedOrder = await cancelOrder(id);
+      setOrders(orders.map(o => o._id === id ? updatedOrder : o));
+      setSelectedOrder(updatedOrder);
+      alert('Đã hủy đơn hàng thành công!');
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Hủy đơn hàng thất bại');
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-6 py-8">
@@ -114,7 +129,8 @@ const MyOrders: React.FC = () => {
           orders.map((order) => (
             <div
               key={order._id}
-              className="bg-white rounded-[16px] border border-[#E5E5E5] p-5 hover:border-[#D4D4D4] hover:shadow-medium transition-all"
+              onClick={() => setSelectedOrder(order)}
+              className="bg-white rounded-[16px] border border-[#E5E5E5] p-5 hover:border-[#D946EF] hover:shadow-medium transition-all cursor-pointer"
             >
               {/* Top row */}
               <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
@@ -170,7 +186,7 @@ const MyOrders: React.FC = () => {
                   className="text-[17px] font-[800] text-[#171717]"
                   style={{ fontFamily: 'Roboto, sans-serif' }}
                 >
-                  {fmt(order.totalPrice)}
+                  {fmt(order.totalPrice + 30000)}
                 </p>
               </div>
             </div>
@@ -199,6 +215,14 @@ const MyOrders: React.FC = () => {
             <ChevronRightIcon className="w-4 h-4" />
           </button>
         </div>
+      )}
+
+      {selectedOrder && (
+        <OrderDetailModal 
+          order={selectedOrder} 
+          onClose={() => setSelectedOrder(null)} 
+          onCancel={handleCancelOrder}
+        />
       )}
     </div>
   );

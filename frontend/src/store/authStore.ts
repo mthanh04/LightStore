@@ -58,6 +58,13 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.setItem(LS_USER_KEY, JSON.stringify(user));
 
       set({ user, token, isAuthenticated: true, isLoading: false });
+      
+      // Sync cart after login, except for admin
+      if (user.role !== 'admin') {
+        import('./cartStore').then(module => {
+          module.useCartStore.getState().syncCart();
+        });
+      }
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
@@ -78,6 +85,13 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.setItem(LS_USER_KEY, JSON.stringify(user));
 
       set({ user, token, isAuthenticated: true, isLoading: false });
+      
+      // Sync cart after register, except for admin
+      if (user.role !== 'admin') {
+        import('./cartStore').then(module => {
+          module.useCartStore.getState().syncCart();
+        });
+      }
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||

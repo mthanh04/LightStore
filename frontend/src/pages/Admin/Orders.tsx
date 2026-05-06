@@ -131,11 +131,11 @@ const Orders: React.FC = () => {
                     </p>
                   </td>
                   <td className="px-4 py-3 text-[15px] font-bold text-[#111111]" style={{ fontFamily: 'Roboto, sans-serif' }}>
-                    {fmt(o.totalPrice)}
+                    {fmt(o.totalPrice + 30000)}
                   </td>
                   <td className="px-4 py-3">
                     <select
-                      disabled={updating === o._id}
+                      disabled={updating === o._id || o.status === 'Cancelled'}
                       value={o.status}
                       onChange={(e) => handleStatusChange(o._id, e.target.value as Order['status'])}
                       className={`h-[30px] pl-2 pr-6 border rounded-[4px] text-[12px] font-bold outline-none cursor-pointer appearance-none bg-no-repeat bg-right disabled:opacity-50

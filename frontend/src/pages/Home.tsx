@@ -17,13 +17,9 @@ import { getCategories, type Category } from '../services/categoryService';
 import bannerImg from '../assets/images/banner_3.png';
 import Reveal from '../animations/Reveal';
 import {
-  fadeInUp,
-  fadeInLeft,
-  fadeInRight,
   staggerContainer,
   staggerItem,
   staggerItemZoom,
-  zoomIn,
   TRANSITION_BASE,
 } from '../animations/variants';
 

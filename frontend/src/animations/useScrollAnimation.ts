@@ -30,7 +30,7 @@ export const useScrollAnimation = ({
   once = true,
 }: UseScrollAnimationOptions = {}): UseScrollAnimationReturn => {
   const controls = useAnimation();
-  const ref = { current: null } as RefObject<HTMLDivElement>;
+  const ref = { current: null } as unknown as RefObject<HTMLDivElement>;
   const inView = useInView(ref, { once, amount: threshold });
 
   useEffect(() => {

@@ -21,18 +21,9 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [
-            function() {
-                return !this.googleId;
-            }, 
-            'Vui lòng nhập mật khẩu'
-        ],
+        required: [true, 'Vui lòng nhập mật khẩu'],
         minlength: [6, 'Mật khẩu phải có ít nhất 6 ký tự'],
         select: false // Không trả password về khi query
-    },
-    googleId: {
-        type: String,
-        default: null
     },
     wishlist: [
         {

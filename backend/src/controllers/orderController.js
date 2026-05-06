@@ -128,6 +128,19 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
         return next(new AppError('Không tìm thấy đơn hàng', 404));
     }
 
+    // Nếu đơn hàng đã bị hủy, không cho phép đổi sang trạng thái khác
+    if (order.status === 'Cancelled' && status !== 'Cancelled') {
+        return next(new AppError('Không thể đổi trạng thái của đơn hàng đã hủy', 400));
+    }
+
+    // Nếu admin hủy đơn hàng (và trạng thái hiện tại chưa phải Cancelled) -> Hoàn lại stock
+    if (status === 'Cancelled' && order.status !== 'Cancelled') {
+        const stockUpdatePromises = order.orderItems.map((item) =>
+            Product.findByIdAndUpdate(item.product, { $inc: { stock: item.quantity } })
+        );
+        await Promise.all(stockUpdatePromises);
+    }
+
     order.status = status;
     await order.save();
 
